@@ -7,29 +7,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="chat-bg">
-    <header class="chat-header">
-        <div style="display:flex; align-items:center;">
-            <div style="width:40px; height:40px; background:linear-gradient(45deg,#45f3ff,#ff3c7b); border-radius:12px; display:flex; align-items:center; justify-content:center; font-weight:bold; box-shadow:0 0 12px #45f3ff;">H</div>
-            <div style="margin-left:14px;">
-                <h1 style="color:#45f3ff; font-weight:bold; font-size:17px;">HEROVEE AI SYSTEM</h1>
-                <p style="font-size:10px; color:#555;">ACTIVE • SIYAM BOSS EDITION</p>
-            </div>
-        </div>
-        <i class="fa-solid fa-power-off" style="color:#333; cursor:pointer; font-size:20px;" onclick="window.location.href='index.html'"></i>
+<body class="chat-bg" style="display:block; overflow-y:auto;">
+    <header style="position:fixed; top:0; width:100%; background:#0d0d0d; padding:15px; display:flex; justify-content:space-between; z-index:100;">
+        <h1 style="color:#45f3ff; font-size:18px;">HEROVEE AI SYSTEM</h1>
+        <i class="fa-solid fa-right-from-bracket" style="cursor:pointer;" onclick="window.location.href='index.html'"></i>
     </header>
 
     <div id="chatBox" class="chat-container">
-        <div class="msg ai-msg">আসসালামু আলাইকুম সিয়াম বস। আমি আপনার কথা শোনার জন্য রেডি।</div>
+        <div class="msg ai-msg">আসসালামু আলাইকুম সিয়াম বস্! আমি রেডি।</div>
     </div>
 
-    <div class="input-area">
-        <div id="previewBox" class="image-preview-box"></div>
-        <div class="input-wrapper">
-            <label for="imgInp" style="color:#45f3ff; margin-right:12px; cursor:pointer; font-size:22px;"><i class="fa-solid fa-camera"></i></label>
-            <input type="file" id="imgInp" style="display:none;" accept="image/*" onchange="previewImg(this)">
-            <textarea id="userInput" rows="1" placeholder="Type message..." oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
-            <button onclick="runAI()" style="background:none; border:none; color:#45f3ff; font-size:24px; margin-left:12px;"><i class="fa-solid fa-paper-plane"></i></button>
+    <div style="position:fixed; bottom:0; width:100%; padding:20px; background:#050505;">
+        <div style="background:#121212; border-radius:30px; display:flex; padding:10px 20px; align-items:center;">
+            <textarea id="userInput" style="flex:1; background:none; border:none; color:white; outline:none;" placeholder="Type message..."></textarea>
+            <button onclick="runAI()" style="background:none; border:none; color:#45f3ff; font-size:20px; margin-left:10px;"><i class="fa-solid fa-paper-plane"></i></button>
         </div>
     </div>
 
@@ -37,45 +28,14 @@
         const apiKeys = ["AIzaSyDjN0RJ-iR0NSbVe_jizvGt_UBO4C8XOBU", "AIzaSyDDDGJOs_JsaPc8-uPf6BDpwceCO-vLs9w"];
         let currentKeyIndex = parseInt(localStorage.getItem('herovee_key_index')) || 0;
         const chatBox = document.getElementById('chatBox');
-        let selectedImgBase64 = null;
-
-        window.onload = () => {
-            const savedChat = localStorage.getItem('herovee_chat_permanent');
-            if (savedChat) { chatBox.innerHTML = savedChat; chatBox.scrollTop = chatBox.scrollHeight; }
-        };
-
-        function saveChat() { localStorage.setItem('herovee_chat_permanent', chatBox.innerHTML); }
-
-        function previewImg(input) {
-            const file = input.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => { 
-                    selectedImgBase64 = e.target.result.split(',')[1];
-                    document.getElementById('previewBox').innerHTML = `<div class="preview-item"><img src="${e.target.result}"><i class="fa-solid fa-circle-xmark close-preview" onclick="clearPreview()"></i></div>`;
-                    document.getElementById('previewBox').style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-        function clearPreview() { selectedImgBase64 = null; document.getElementById('previewBox').style.display = 'none'; }
 
         async function runAI() {
             const input = document.getElementById('userInput');
             const prompt = input.value.trim();
-            if (!prompt && !selectedImgBase64) return;
+            if (!prompt) return;
 
-            if(selectedImgBase64) {
-                let img = document.createElement('img'); img.src=`data:image/jpeg;base64,${selectedImgBase64}`; img.className='media-msg';
-                chatBox.appendChild(img);
-            }
-            if(prompt) {
-                let d = document.createElement('div'); d.className='msg user-msg'; d.innerText=prompt;
-                chatBox.appendChild(d);
-            }
-
-            input.value = ''; const tempImg = selectedImgBase64; clearPreview();
-            chatBox.scrollTop = chatBox.scrollHeight; saveChat();
+            let userMsg = document.createElement('div'); userMsg.className='msg user-msg'; userMsg.innerText=prompt;
+            chatBox.appendChild(userMsg); input.value = '';
 
             let loading = document.createElement('div'); loading.className='msg ai-msg'; loading.innerText="HEROVEE ভাবছে...";
             chatBox.appendChild(loading); chatBox.scrollTop = chatBox.scrollHeight;
@@ -86,15 +46,13 @@
 
             try {
                 const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt || "এই ছবি কি?" }, ...(tempImg ? [{ inline_data: { mime_type: "image/jpeg", data: tempImg } }] : [])] }] })
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
                 });
                 const data = await res.json();
                 loading.innerText = data.candidates[0].content.parts[0].text;
             } catch (e) { loading.innerText = "Error boss! Try again."; }
-            
-            chatBox.scrollTop = chatBox.scrollHeight; saveChat();
+            chatBox.scrollTop = chatBox.scrollHeight;
         }
     </script>
 </body>
