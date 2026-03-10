@@ -6,33 +6,30 @@
     <title>Herovee AI System - Siyamboss</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
     <style>
-        body { background: #050505; display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; font-family: 'Segoe UI', sans-serif; color: white; margin: 0; }
-        
-        /* HERVOEE স্টাইলিশ গ্লোয়িং টেক্সট */
+        body { background: #050505; display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow-x: hidden; font-family: 'Segoe UI', sans-serif; color: white; margin: 0; }
         .herovee-title { font-family: 'Orbitron', sans-serif; text-transform: uppercase; letter-spacing: 5px; background: linear-gradient(90deg, #45f3ff, #ff3c7b, #45f3ff); background-size: 200% auto; -webkit-background-clip: text; color: transparent; animation: gradientShift 3s linear infinite; text-shadow: 0 0 15px rgba(69, 243, 255, 0.5); }
         @keyframes gradientShift { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
-
-        /* অ্যানিমেটেড বর্ডার কার্ড */
+        
         .auth-card { position: relative; width: 380px; min-height: 520px; background: #111; border-radius: 40px; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px 20px; transition: all 0.4s ease; border: 1px solid rgba(255,255,255,0.05); }
-        .orbit { position: absolute; width: 410px; height: 580px; background: linear-gradient(0deg, transparent, #45f3ff, #ff3c7b); border-radius: 50%; z-index: 1; animation: rotate 4s linear infinite; }
+        .orbit { position: absolute; width: 410px; height: 600px; background: linear-gradient(0deg, transparent, #45f3ff, #ff3c7b); border-radius: 50%; z-index: 1; animation: rotate 4s linear infinite; }
         @keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         .input-style { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 12px 20px; margin-bottom: 15px; color: white; outline: none; transition: 0.3s; font-size: 14px; }
         .input-style:focus { border-color: #45f3ff; box-shadow: 0 0 10px rgba(69, 243, 255, 0.3); }
 
-        /* কাস্টম কান্ট্রি ড্রপডাউন স্টাইল */
-        .country-container { position: relative; width: 100%; margin-bottom: 15px; }
-        .country-list { display: none; position: absolute; top: 110%; left: 0; w-full; background: #1a1a1a; border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; z-index: 100; max-height: 200px; overflow-y: auto; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .country-list { display: none; position: absolute; top: 110%; left: 0; background: #1a1a1a; border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; z-index: 100; max-height: 180px; overflow-y: auto; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .country-item { padding: 10px 20px; font-size: 14px; cursor: pointer; transition: 0.2s; }
         .country-item:hover { background: rgba(69, 243, 255, 0.1); color: #45f3ff; }
-        .country-list::-webkit-scrollbar { width: 5px; }
-        .country-list::-webkit-scrollbar-thumb { background: #45f3ff; border-radius: 10px; }
 
         .action-btn { width: 100%; padding: 14px; border-radius: 15px; border: none; background: linear-gradient(90deg, #45f3ff, #ff3c7b); color: white; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; letter-spacing: 1px; }
-        .action-btn:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(69, 243, 255, 0.4); }
+        .action-btn:active { transform: scale(0.95); }
         
-        .toggle-link { cursor: pointer; color: #45f3ff; font-weight: bold; }
         #signupFields { display: none; width: 100%; }
         #loginFields { width: 100%; }
     </style>
@@ -42,131 +39,121 @@
     <div class="orbit"></div>
     
     <div id="authCard" class="auth-card shadow-2xl">
-        <h2 class="herovee-title text-4xl mb-10">HEROVEE</h2>
+        <h2 class="herovee-title text-4xl mb-10 text-center">HEROVEE</h2>
         
         <div id="loginFields">
             <input type="email" id="loginEmail" placeholder="Gmail Address" class="input-style">
             <input type="password" id="loginPass" placeholder="Password" class="input-style">
             <button onclick="handleLogin()" class="action-btn">SIGN IN</button>
-            <p class="text-[12px] text-gray-500 mt-6 text-center">Don't have an account? <span onclick="toggleForm()" class="toggle-link">Create Account</span></p>
+            <p class="text-[12px] text-gray-500 mt-6 text-center">New here? <span onclick="toggleForm()" class="text-cyan-400 cursor-pointer font-bold underline">Create Account</span></p>
         </div>
 
         <div id="signupFields">
             <input type="text" id="signupName" placeholder="Full Name" class="input-style">
             
-            <div class="country-container">
-                <div onclick="toggleCountryList()" id="selectedCountry" class="input-style flex justify-between items-center cursor-pointer">
+            <div class="relative w-100 mb-4">
+                <div onclick="toggleCountryList()" id="countryBox" class="input-style flex justify-between items-center cursor-pointer mb-0">
                     <span id="countryText">Select Country</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 9l-7 7-7-7" /></svg>
+                    <span>▼</span>
                 </div>
                 <div id="countryList" class="country-list">
-                    <input type="text" id="countrySearch" onkeyup="filterCountries()" placeholder="Type country..." class="w-full bg-white/5 p-3 border-b border-white/10 outline-none text-cyan-400 text-sm">
+                    <input type="text" id="countrySearch" onkeyup="filterCountries()" placeholder="Search..." class="w-full bg-white/10 p-2 outline-none border-b border-white/10 text-cyan-400 text-sm">
                     <div id="countryOptions"></div>
                 </div>
             </div>
 
             <input type="email" id="signupEmail" placeholder="Gmail Address" class="input-style">
             <input type="password" id="signupPass" placeholder="Password" class="input-style">
-            <input type="password" id="signupConfirmPass" placeholder="Confirm Password" class="input-style">
-            
-            <p id="errorBox" class="text-[11px] text-pink-500 mb-2 hidden text-center"></p>
+            <input type="password" id="signupConfirm" placeholder="Confirm Password" class="input-style">
             
             <button onclick="handleSignup()" class="action-btn">CREATE ACCOUNT</button>
-            <p class="text-[12px] text-gray-500 mt-6 text-center">Already have an account? <span onclick="toggleForm()" class="toggle-link">Sign In</span></p>
+            <p class="text-[12px] text-gray-500 mt-6 text-center">Already have one? <span onclick="toggleForm()" class="text-cyan-400 cursor-pointer font-bold underline">Sign In</span></p>
         </div>
     </div>
 
     <script>
-        let isLogin = true;
-        const countryList = ["Bangladesh", "India", "USA", "UK", "Canada", "Australia", "Germany", "France", "Japan", "UAE", "Saudi Arabia", "Pakistan", "Brazil", "Russia", "China", "Singapore", "Malaysia", "Italy"];
-        let selectedCountryName = "";
+        // --- আপনার Firebase Config সেট করা হয়েছে ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyC2mVQ231K2kEqhxP01YJyiuZzsFK1RIcE",
+            authDomain: "herovee-ai.firebaseapp.com",
+            projectId: "herovee-ai",
+            storageBucket: "herovee-ai.firebasestorage.app",
+            messagingSenderId: "89517868095",
+            appId: "1:89517868095:web:c0500e9a8dbb426cada48a",
+            measurementId: "G-CXHX9FDZWQ"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
 
-        // কান্ট্রি লিস্ট লোড করা
+        let isLogin = true;
+        let selectedCountry = "";
+        const countries = ["Bangladesh", "India", "USA", "UK", "Canada", "Australia", "UAE", "Saudi Arabia", "Singapore", "Malaysia"];
+
         function loadCountries() {
             const options = document.getElementById('countryOptions');
-            options.innerHTML = countryList.map(c => `<div class="country-item" onclick="setCountry('${c}')">${c}</div>`).join('');
+            options.innerHTML = countries.map(c => `<div class="country-item" onclick="setCountry('${c}')">${c}</div>`).join('');
         }
 
         function toggleCountryList() {
             const list = document.getElementById('countryList');
             list.style.display = list.style.display === 'block' ? 'none' : 'block';
-            if(list.style.display === 'block') document.getElementById('countrySearch').focus();
         }
 
         function filterCountries() {
             const term = document.getElementById('countrySearch').value.toLowerCase();
             const items = document.getElementsByClassName('country-item');
-            for(let i of items) {
-                i.style.display = i.innerText.toLowerCase().includes(term) ? "block" : "none";
-            }
+            for(let i of items) i.style.display = i.innerText.toLowerCase().includes(term) ? "block" : "none";
         }
 
         function setCountry(name) {
-            selectedCountryName = name;
+            selectedCountry = name;
             document.getElementById('countryText').innerText = name;
-            document.getElementById('countryText').style.color = "#45f3ff";
             document.getElementById('countryList').style.display = 'none';
         }
 
-        // ফর্ম পরিবর্তন (Login <=> Signup)
         function toggleForm() {
-            const login = document.getElementById('loginFields');
-            const signup = document.getElementById('signupFields');
-            const card = document.getElementById('authCard');
-            
-            if(isLogin) {
-                login.style.display = 'none';
-                signup.style.display = 'block';
-                card.style.minHeight = '650px';
-            } else {
-                login.style.display = 'block';
-                signup.style.display = 'none';
-                card.style.minHeight = '520px';
-            }
             isLogin = !isLogin;
+            document.getElementById('loginFields').style.display = isLogin ? 'block' : 'none';
+            document.getElementById('signupFields').style.display = isLogin ? 'none' : 'block';
+            document.getElementById('authCard').style.minHeight = isLogin ? '520px' : '650px';
         }
 
-        function handleLogin() {
-            const email = document.getElementById('loginEmail').value;
-            const pass = document.getElementById('loginPass').value;
-            if(email === "sadaf245sz@gmail.com" && pass === "siyamboss") {
-                alert("স্বাগতম সিয়াম বস্! সিস্টেম আনলক হচ্ছে...");
-                // window.location.href = "chat.html";
-            } else { alert("ভুল তথ্য! সঠিক জিমেইল এবং পাসওয়ার্ড দিন।"); }
-        }
-
-        function handleSignup() {
+        async function handleSignup() {
             const name = document.getElementById('signupName').value;
             const email = document.getElementById('signupEmail').value;
             const pass = document.getElementById('signupPass').value;
-            const confirm = document.getElementById('signupConfirmPass').value;
-            const err = document.getElementById('errorBox');
+            const confirm = document.getElementById('signupConfirm').value;
 
-            if(!name || !selectedCountryName || !email || !pass || !confirm) {
-                err.innerText = "বস্, সব তথ্য পূরণ করুন!";
-                err.classList.remove('hidden');
-                return;
-            }
+            if(pass !== confirm) return alert("পাসওয়ার্ড ম্যাচ করছে না!");
+            if(!selectedCountry) return alert("দেশ সিলেক্ট করুন!");
 
-            if(pass !== confirm) {
-                err.innerText = "পাসওয়ার্ড ম্যাচ করছে না!";
-                err.classList.remove('hidden');
-                return;
-            }
+            try {
+                const cred = await auth.createUserWithEmailAndPassword(email, pass);
+                await db.collection("users").doc(cred.user.uid).set({
+                    fullName: name,
+                    country: selectedCountry,
+                    email: email,
+                    role: "User",
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                alert("স্বাগতম " + name + "! অ্যাকাউন্ট তৈরি হয়েছে।");
+                toggleForm();
+            } catch (err) { alert(err.message); }
+        }
 
-            err.classList.add('hidden');
-            alert(`অভিনন্দন ${name} বস্! আপনার অ্যাকাউন্ট তৈরি হয়েছে।`);
-            toggleForm();
+        async function handleLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+            try {
+                await auth.signInWithEmailAndPassword(email, pass);
+                alert("লগইন সফল! Herovee AI সিস্টেমে আপনাকে স্বাগতম।");
+                // এখানে আপনার চ্যাট পেইজের লিঙ্ক দিন
+            } catch (err) { alert("ভুল ইমেইল বা পাসওয়ার্ড!"); }
         }
 
         window.onload = loadCountries;
-
-        // বাইরে ক্লিক করলে কান্ট্রি লিস্ট বন্ধ হবে
-        window.onclick = function(event) {
-            if (!event.target.closest('.country-container')) {
-                document.getElementById('countryList').style.display = 'none';
-            }
-        }
     </script>
 </body>
 </html>
