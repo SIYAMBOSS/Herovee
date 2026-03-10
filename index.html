@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Herovee AI - Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -49,7 +49,7 @@
             </p>
         </div>
 
-        <div id="google_login_btn" onclick="alert('Please use standard login for now.')">
+        <div id="google_login_btn" onclick="alert('Google login initializing... Use Gmail/Pass for now.')">
             <img src="https://img.icons8.com/color/48/000000/google-logo.png" width="30">
         </div>
     </div>
@@ -58,7 +58,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // আপনার দেওয়া কনফিগ
         const firebaseConfig = {
             apiKey: "AIzaSyDjN0RJ-iR0NSbVe_jizvGt_UBO4C8XOBU", 
             authDomain: "sadaf245sz.firebaseapp.com",
@@ -71,42 +70,43 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        const allCountries = ["Afghanistan","Albania","Algeria","Andorra","Angola","Argentina","Armenia","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Brazil","Brunei","Bulgaria","Cambodia","Cameroon","Canada","Chile","China","Colombia","Denmark","Egypt","Finland","France","Germany","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Japan","Malaysia","Maldives","Mexico","Nepal","Netherlands","New Zealand","Norway","Pakistan","Philippines","Qatar","Russia","Saudi Arabia","Singapore","South Africa","South Korea","Spain","Sri Lanka","Sweden","Switzerland","Thailand","Turkey","UAE","United Kingdom","United States","Vietnam"];
+        const allCountries = ["Afghanistan","Albania","Algeria","Argentina","Australia","Bangladesh","Brazil","Canada","China","Denmark","Egypt","Finland","France","Germany","India","Indonesia","Iran","Iraq","Italy","Japan","Malaysia","Maldives","Mexico","Nepal","Netherlands","Norway","Pakistan","Philippines","Qatar","Russia","Saudi Arabia","Singapore","South Africa","South Korea","Spain","Sri Lanka","Sweden","Switzerland","Thailand","Turkey","UAE","United Kingdom","United States","Vietnam"];
 
         window.handleLogin = async () => {
             const email = document.getElementById('lEmail').value;
             const pass = document.getElementById('lPass').value;
-            if(!email || !pass) return alert("Email and Password required!");
+            if(!email || !pass) return alert("All fields are required!");
             try { await signInWithEmailAndPassword(auth, email, pass); window.location.href = 'chat.html'; }
-            catch (e) { alert("Login failed! Check credentials."); }
+            catch (e) { alert("Login Error: " + e.message); }
         };
 
         window.handleSignup = async () => {
             const email = document.getElementById('sEmail').value;
             const pass = document.getElementById('sPass').value;
             const confirm = document.getElementById('sConfirm').value;
-            const country = document.getElementById('countryInp').value;
-            if(!email || !country) return alert("All fields are required!");
-            if(pass !== confirm) return alert("Passwords do not match!");
+            if(!email || pass !== confirm) return alert("Check inputs or password mismatch!");
             try { await createUserWithEmailAndPassword(auth, email, pass); alert("Account Created!"); toggleAuth(); }
             catch (e) { alert(e.message); }
         };
 
-        // UI Logic
         window.togglePass = (id, el) => {
             const p = document.getElementById(id);
             p.type = p.type === 'password' ? 'text' : 'password';
             el.className = p.type === 'password' ? 'fa-solid fa-eye-slash eye-icon' : 'fa-solid fa-eye eye-icon';
         };
+
         window.toggleAuth = () => {
-            document.getElementById('loginForm').style.display = document.getElementById('loginForm').style.display === 'none' ? 'flex' : 'none';
-            document.getElementById('signupForm').style.display = document.getElementById('signupForm').style.display === 'none' ? 'block' : 'none';
+            const l = document.getElementById('loginForm'), s = document.getElementById('signupForm');
+            l.style.display = l.style.display === 'none' ? 'flex' : 'none';
+            s.style.display = s.style.display === 'none' ? 'block' : 'none';
         };
+
         window.toggleList = () => {
             const list = document.getElementById('countryList');
             list.style.display = list.style.display === 'block' ? 'none' : 'block';
             if(list.style.display === 'block') renderCountries(allCountries);
         };
+
         window.renderCountries = (list) => {
             const wrapper = document.getElementById('countriesWrapper');
             wrapper.innerHTML = "";
@@ -116,6 +116,7 @@
                 wrapper.appendChild(d);
             });
         };
+
         window.filterCountries = () => {
             const term = document.getElementById('countrySearch').value.toLowerCase();
             renderCountries(allCountries.filter(c => c.toLowerCase().includes(term)));
