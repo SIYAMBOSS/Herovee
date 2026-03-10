@@ -18,6 +18,7 @@
 <body>
 
     <div id="customAlert">Notification</div>
+    
     <div class="orbit"></div>
     
     <div class="auth-card shadow-2xl">
@@ -76,6 +77,7 @@
     </div>
 
     <script>
+        // আপনার ফায়ারবেস কনফিগারেশন
         const firebaseConfig = {
             apiKey: "AIzaSyC2mVQ231K2kEqhxP01YJyiuZzsFK1RIcE",
             authDomain: "herovee-ai.firebaseapp.com",
@@ -103,7 +105,7 @@
             }
         }
 
-        // বিশ্বের সব দেশের নাম লোড করা
+        // বিশ্বের সব দেশের নাম এপিআই থেকে লোড করা
         async function loadAllCountries() {
             try {
                 const res = await fetch('https://restcountries.com/v3.1/all?fields=name');
@@ -144,7 +146,27 @@
             setTimeout(() => alertBox.classList.remove('show'), 3500);
         }
 
-        // --- Firebase Handlers ---
+        // --- Google Login Handler (সাদা পেজ সমস্যা সমাধানের কোড) ---
+        async function handleGoogleLogin() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            provider.setCustomParameters({ prompt: 'select_account' });
+
+            try {
+                // পপ-আপ মোড ব্যবহার করা হচ্ছে যাতে সাদা রিডাইরেক্ট পেজ না আসে
+                const result = await auth.signInWithPopup(provider);
+                if (result.user) {
+                    showMessage("Login Successful! Welcome " + result.user.displayName);
+                }
+            } catch (err) {
+                console.error(err);
+                if (err.code === 'auth/popup-blocked') {
+                    showMessage("Please allow pop-ups for this site", "error");
+                } else {
+                    showMessage("Google Login Failed!", "error");
+                }
+            }
+        }
+
         async function handleLogin() {
             const email = document.getElementById('loginEmail').value;
             const pass = document.getElementById('loginPass').value;
@@ -169,15 +191,6 @@
                 showMessage("Account Created!");
                 toggleForm();
             } catch (err) { showMessage(err.message, "error"); }
-        }
-
-        async function handleGoogleLogin() {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            provider.setCustomParameters({ prompt: 'select_account' });
-            try {
-                await auth.signInWithPopup(provider);
-                showMessage("Login Successful!");
-            } catch (err) { showMessage("Failed!", "error"); }
         }
 
         function toggleForm() {
