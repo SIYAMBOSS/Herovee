@@ -8,9 +8,12 @@ body {
     color: white; 
     margin: 0; 
     overflow: hidden; 
+    touch-action: pan-x pan-y; /* জুম প্রিভেন্ট করতে সাহায্য করে */
 }
 
-/* Herovee Title Animation */
+/* Chrome/Safari-তে ইনপুট জুম বন্ধের জন্য */
+input { font-size: 16px !important; } 
+
 .herovee-title { 
     font-family: 'Orbitron', sans-serif; 
     text-transform: uppercase; 
@@ -24,7 +27,6 @@ body {
 }
 @keyframes gradientShift { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
 
-/* Orbit Animation */
 .orbit { 
     position: absolute; 
     width: 410px; 
@@ -36,11 +38,10 @@ body {
 }
 @keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-/* Main Card */
 .auth-card { 
     position: relative; 
     width: 380px; 
-    min-height: 550px; 
+    min-height: 560px; 
     background: #111; 
     border-radius: 40px; 
     z-index: 10; 
@@ -52,7 +53,6 @@ body {
     border: 1px solid rgba(255,255,255,0.05); 
 }
 
-/* Input Fields */
 .input-style { 
     width: 100%; 
     background: rgba(255,255,255,0.05); 
@@ -62,10 +62,8 @@ body {
     margin-bottom: 12px; 
     color: white; 
     outline: none; 
-    font-size: 14px; 
 }
 
-/* Buttons */
 .action-btn { 
     width: 100%; 
     padding: 15px; 
@@ -76,7 +74,6 @@ body {
     cursor: pointer; 
 }
 
-/* Google ImageButton Android Style */
 #google_login_btn {
     width: 48px;
     height: 48px;
@@ -89,9 +86,7 @@ body {
     margin-top: 20px;
     border: 1px solid rgba(255,255,255,0.1);
 }
-#google_login_btn:active { background: rgba(255,255,255,0.1); transform: scale(0.95); }
 
-/* Country Dropdown */
 .country-list { 
     display: none; 
     position: absolute; 
@@ -99,15 +94,26 @@ body {
     left: 0; 
     width: 100%; 
     background: #1a1a1a; 
-    border-radius: 10px; 
+    border-radius: 15px; 
     z-index: 50; 
-    max-height: 150px; 
+    max-height: 200px; 
     overflow-y: auto; 
+    border: 1px solid #333;
 }
-.country-item { padding: 10px; cursor: pointer; font-size: 13px; border-bottom: 1px solid #222; }
+.country-search-input {
+    width: 100%;
+    padding: 10px;
+    background: #222;
+    border: none;
+    border-bottom: 1px solid #333;
+    color: #45f3ff;
+    outline: none;
+    position: sticky;
+    top: 0;
+}
+.country-item { padding: 12px; cursor: pointer; font-size: 13px; border-bottom: 1px solid #222; }
 .country-item:hover { background: #45f3ff22; }
 
-/* Notification Box */
 #customAlert { 
     position: fixed; 
     top: -100px; 
