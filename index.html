@@ -9,13 +9,13 @@
 </head>
 <body>
     <div class="orbit"></div>
+    <div id="custom-toast">মেসেজ এখানে দেখাবে</div>
+
     <div class="auth-card">
         <h2 class="herovee-title">HEROVEE</h2>
         
         <div id="loginForm" style="width:100%; display: flex; flex-direction: column;">
-            <div class="input-group">
-                <input type="email" id="lEmail" placeholder="Gmail Address" class="input-style">
-            </div>
+            <div class="input-group"><input type="email" id="lEmail" placeholder="Gmail Address" class="input-style"></div>
             <div class="input-group">
                 <input type="password" id="lPass" placeholder="Password" class="input-style">
                 <i class="fa-solid fa-eye-slash eye-icon" onclick="togglePass('lPass', this)"></i>
@@ -27,13 +27,6 @@
         </div>
 
         <div id="signupForm" style="display:none; width:100%;">
-            <div class="input-group">
-                <input type="text" id="countryInp" placeholder="Select Country" class="input-style" readonly onclick="toggleList()">
-                <div id="countryList" class="country-list">
-                    <div class="search-box"><input type="text" id="countrySearch" placeholder="Search country..." onkeyup="filterCountries()"></div>
-                    <div id="countriesWrapper"></div>
-                </div>
-            </div>
             <input type="email" id="sEmail" placeholder="Gmail Address" class="input-style" style="margin-bottom:14px;">
             <div class="input-group">
                 <input type="password" id="sPass" placeholder="Create Password" class="input-style">
@@ -49,17 +42,17 @@
             </p>
         </div>
 
-        <div id="google_login_btn" onclick="alert('Google login initializing... Use Gmail/Pass for now.')">
+        <div id="google_login_btn" onclick="handleGoogleLogin()">
             <img src="https://img.icons8.com/color/48/000000/google-logo.png" width="30">
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyDjN0RJ-iR0NSbVe_jizvGt_UBO4C8XOBU", 
+            apiKey: "AIzaSyDjN0RJ-iR0NSbVe_jizvGt_UBO4C8XOBU",
             authDomain: "sadaf245sz.firebaseapp.com",
             projectId: "sadaf245sz",
             storageBucket: "sadaf245sz.appspot.com",
@@ -70,56 +63,44 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        const allCountries = ["Afghanistan","Albania","Algeria","Argentina","Australia","Bangladesh","Brazil","Canada","China","Denmark","Egypt","Finland","France","Germany","India","Indonesia","Iran","Iraq","Italy","Japan","Malaysia","Maldives","Mexico","Nepal","Netherlands","Norway","Pakistan","Philippines","Qatar","Russia","Saudi Arabia","Singapore","South Africa","South Korea","Spain","Sri Lanka","Sweden","Switzerland","Thailand","Turkey","UAE","United Kingdom","United States","Vietnam"];
+        window.showMsg = (text) => {
+            const toast = document.getElementById('custom-toast');
+            toast.innerText = text; toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        };
+
+        window.handleGoogleLogin = async () => {
+            try {
+                const result = await signInWithPopup(auth, new GoogleAuthProvider());
+                showMsg("স্বাগতম সিয়াম বস্!");
+                setTimeout(() => { window.location.href = 'chat.html'; }, 1000);
+            } catch (e) { showMsg("গুগল লগইন ব্যর্থ হয়েছে!"); }
+        };
 
         window.handleLogin = async () => {
-            const email = document.getElementById('lEmail').value;
+            const email = document.getElementById('lEmail').value.trim();
             const pass = document.getElementById('lPass').value;
-            if(!email || !pass) return alert("All fields are required!");
+            if(!email || !pass) return showMsg("সবগুলো ঘর পূরণ করুন!");
             try { await signInWithEmailAndPassword(auth, email, pass); window.location.href = 'chat.html'; }
-            catch (e) { alert("Login Error: " + e.message); }
+            catch (e) { showMsg("ভুল ইমেইল বা পাসওয়ার্ড!"); }
         };
 
         window.handleSignup = async () => {
             const email = document.getElementById('sEmail').value;
             const pass = document.getElementById('sPass').value;
-            const confirm = document.getElementById('sConfirm').value;
-            if(!email || pass !== confirm) return alert("Check inputs or password mismatch!");
-            try { await createUserWithEmailAndPassword(auth, email, pass); alert("Account Created!"); toggleAuth(); }
-            catch (e) { alert(e.message); }
+            if(pass !== document.getElementById('sConfirm').value) return showMsg("পাসওয়ার্ড ম্যাচ করেনি!");
+            try { await createUserWithEmailAndPassword(auth, email, pass); showMsg("অ্যাকাউন্ট তৈরি সফল!"); toggleAuth(); }
+            catch (e) { showMsg("ত্রুটি: " + e.message); }
         };
 
         window.togglePass = (id, el) => {
-            const p = document.getElementById(id);
-            p.type = p.type === 'password' ? 'text' : 'password';
+            const p = document.getElementById(id); p.type = p.type === 'password' ? 'text' : 'password';
             el.className = p.type === 'password' ? 'fa-solid fa-eye-slash eye-icon' : 'fa-solid fa-eye eye-icon';
         };
-
         window.toggleAuth = () => {
             const l = document.getElementById('loginForm'), s = document.getElementById('signupForm');
             l.style.display = l.style.display === 'none' ? 'flex' : 'none';
             s.style.display = s.style.display === 'none' ? 'block' : 'none';
-        };
-
-        window.toggleList = () => {
-            const list = document.getElementById('countryList');
-            list.style.display = list.style.display === 'block' ? 'none' : 'block';
-            if(list.style.display === 'block') renderCountries(allCountries);
-        };
-
-        window.renderCountries = (list) => {
-            const wrapper = document.getElementById('countriesWrapper');
-            wrapper.innerHTML = "";
-            list.forEach(c => {
-                let d = document.createElement('div'); d.className='country-item'; d.innerText=c;
-                d.onclick = () => { document.getElementById('countryInp').value=c; document.getElementById('countryList').style.display='none'; };
-                wrapper.appendChild(d);
-            });
-        };
-
-        window.filterCountries = () => {
-            const term = document.getElementById('countrySearch').value.toLowerCase();
-            renderCountries(allCountries.filter(c => c.toLowerCase().includes(term)));
         };
     </script>
 </body>
