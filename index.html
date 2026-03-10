@@ -200,6 +200,44 @@
         }
 
         window.onload = loadAllCountries;
+        // --- Google Login Handler ---
+async function handleGoogleLogin() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+
+    try {
+        const result = await auth.signInWithPopup(provider);
+        if (result.user) {
+            showMessage("Login Successful! Welcome " + result.user.displayName);
+            
+            // Success hole chat page-e niye jabe
+            setTimeout(() => {
+                window.location.href = 'chat.html';
+            }, 1000);
+        }
+    } catch (err) {
+        console.error(err);
+        showMessage("Google Login Failed!", "error");
+    }
+}
+
+// --- Email Login Handler ---
+async function handleLogin() {
+    const email = document.getElementById('loginEmail').value;
+    const pass = document.getElementById('loginPass').value;
+    try {
+        await auth.signInWithEmailAndPassword(email, pass);
+        showMessage("Login Successful!");
+
+        // Success hole chat page-e niye jabe
+        setTimeout(() => {
+            window.location.href = 'chat.html';
+        }, 1000);
+    } catch (err) { 
+        showMessage("Invalid Credentials!", "error"); 
+    }
+}
+
     </script>
 </body>
 </html>
