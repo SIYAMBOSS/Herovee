@@ -3,33 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Herovee AI - Login</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Herovee AI - Siyam Boss Login</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 </head>
 <body>
-    <div id="customAlert">Notification</div>
     <div class="orbit"></div>
-    
     <div class="auth-card">
-        <h2 class="herovee-title text-4xl mb-8">HEROVEE</h2>
+        <h2 class="herovee-title text-4xl mb-8" style="font-size: 35px; margin-bottom: 30px;">HEROVEE</h2>
         
-        <div id="loginFields" class="w-full">
+        <div id="loginFields" class="w-full" style="width: 100%;">
             <input type="email" id="loginEmail" placeholder="Gmail Address" class="input-style">
             <input type="password" id="loginPass" placeholder="Password" class="input-style">
             <button onclick="handleLogin()" class="action-btn">SIGN IN</button>
-            <p class="text-[12px] mt-6 text-center">New? <span onclick="toggleForm()" class="text-cyan-400 cursor-pointer underline">Create Account</span></p>
+            <p style="text-align:center; font-size:12px; margin-top:20px;">New here? <span onclick="toggleForm()" style="color:#45f3ff; cursor:pointer; text-decoration:underline;">Create Account</span></p>
         </div>
 
-        <div id="signupFields" class="w-full" style="display: none;">
+        <div id="signupFields" class="w-full" style="display: none; width: 100%;">
             <input type="text" id="signupName" placeholder="Full Name" class="input-style">
             <input type="email" id="signupEmail" placeholder="Gmail Address" class="input-style">
             <input type="password" id="signupPass" placeholder="Password" class="input-style">
             <button onclick="handleSignup()" class="action-btn">CREATE ACCOUNT</button>
-            <p class="text-[12px] mt-4 text-center">Back to <span onclick="toggleForm()" class="text-cyan-400 cursor-pointer underline">Sign In</span></p>
+            <p style="text-align:center; font-size:12px; margin-top:20px;">Back to <span onclick="toggleForm()" style="color:#45f3ff; cursor:pointer; text-decoration:underline;">Sign In</span></p>
         </div>
 
         <div id="google_login_btn" onclick="handleGoogleLogin()">
@@ -50,8 +46,11 @@
         function toggleForm() {
             const l = document.getElementById('loginFields');
             const s = document.getElementById('signupFields');
-            l.style.display = l.style.display === 'none' ? 'block' : 'none';
-            s.style.display = s.style.display === 'none' ? 'block' : 'none';
+            if(l.style.display === 'none') {
+                l.style.display = 'block'; s.style.display = 'none';
+            } else {
+                l.style.display = 'none'; s.style.display = 'block';
+            }
         }
 
         async function handleGoogleLogin() {
@@ -60,22 +59,17 @@
             try {
                 const result = await auth.signInWithPopup(provider);
                 if(result.user) window.location.href = 'chat.html';
-            } catch (err) { alert("Google Login Failed!"); }
+            } catch (err) { alert("Google Login Error: " + err.message); }
         }
 
         async function handleLogin() {
             const e = document.getElementById('loginEmail').value;
             const p = document.getElementById('loginPass').value;
+            if(!e || !p) return alert("Please fill all fields");
             try {
                 await auth.signInWithEmailAndPassword(e, p);
                 window.location.href = 'chat.html';
-            } catch (err) { alert("Login Failed!"); }
-        }
-
-        function showMessage(t) {
-            const a = document.getElementById('customAlert');
-            a.innerText = t; a.classList.add('show');
-            setTimeout(() => a.classList.remove('show'), 3000);
+            } catch (err) { alert("Invalid Gmail or Password!"); }
         }
     </script>
 </body>
