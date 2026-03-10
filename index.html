@@ -12,23 +12,32 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
     <style>
-        body { background: #050505; display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow-x: hidden; font-family: 'Segoe UI', sans-serif; color: white; margin: 0; }
+        body { background: #050505; display: flex; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; font-family: 'Segoe UI', sans-serif; color: white; margin: 0; }
+        
+        /* Herovee Stylish Title */
         .herovee-title { font-family: 'Orbitron', sans-serif; text-transform: uppercase; letter-spacing: 5px; background: linear-gradient(90deg, #45f3ff, #ff3c7b, #45f3ff); background-size: 200% auto; -webkit-background-clip: text; color: transparent; animation: gradientShift 3s linear infinite; text-shadow: 0 0 15px rgba(69, 243, 255, 0.5); }
         @keyframes gradientShift { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
-        
+
+        /* Card & Orbit Animation */
         .auth-card { position: relative; width: 380px; min-height: 520px; background: #111; border-radius: 40px; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px 20px; transition: all 0.4s ease; border: 1px solid rgba(255,255,255,0.05); }
         .orbit { position: absolute; width: 410px; height: 600px; background: linear-gradient(0deg, transparent, #45f3ff, #ff3c7b); border-radius: 50%; z-index: 1; animation: rotate 4s linear infinite; }
         @keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+        /* Input Styles */
         .input-style { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 12px 20px; margin-bottom: 15px; color: white; outline: none; transition: 0.3s; font-size: 14px; }
         .input-style:focus { border-color: #45f3ff; box-shadow: 0 0 10px rgba(69, 243, 255, 0.3); }
 
-        .country-list { display: none; position: absolute; top: 110%; left: 0; background: #1a1a1a; border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; z-index: 100; max-height: 180px; overflow-y: auto; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .country-item { padding: 10px 20px; font-size: 14px; cursor: pointer; transition: 0.2s; }
-        .country-item:hover { background: rgba(69, 243, 255, 0.1); color: #45f3ff; }
+        /* Custom Notification Toast */
+        #customAlert { position: fixed; top: 20px; right: -400px; background: rgba(17, 17, 17, 0.95); border-left: 5px solid #45f3ff; color: white; padding: 15px 25px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 9999; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); backdrop-filter: blur(10px); font-weight: 500; }
+        #customAlert.show { right: 20px; }
+        #customAlert.error { border-left-color: #ff3c7b; }
 
         .action-btn { width: 100%; padding: 14px; border-radius: 15px; border: none; background: linear-gradient(90deg, #45f3ff, #ff3c7b); color: white; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; letter-spacing: 1px; }
         .action-btn:active { transform: scale(0.95); }
+
+        .country-list { display: none; position: absolute; top: 110%; left: 0; background: #1a1a1a; border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; z-index: 100; max-height: 180px; overflow-y: auto; width: 100%; }
+        .country-item { padding: 10px 20px; font-size: 14px; cursor: pointer; transition: 0.2s; }
+        .country-item:hover { background: rgba(69, 243, 255, 0.1); color: #45f3ff; }
         
         #signupFields { display: none; width: 100%; }
         #loginFields { width: 100%; }
@@ -36,10 +45,11 @@
 </head>
 <body>
 
+    <div id="customAlert"></div>
     <div class="orbit"></div>
     
     <div id="authCard" class="auth-card shadow-2xl">
-        <h2 class="herovee-title text-4xl mb-10 text-center">HEROVEE</h2>
+        <h2 class="herovee-title text-4xl mb-10">HEROVEE</h2>
         
         <div id="loginFields">
             <input type="email" id="loginEmail" placeholder="Gmail Address" class="input-style">
@@ -51,7 +61,7 @@
         <div id="signupFields">
             <input type="text" id="signupName" placeholder="Full Name" class="input-style">
             
-            <div class="relative w-100 mb-4">
+            <div class="relative w-full mb-4">
                 <div onclick="toggleCountryList()" id="countryBox" class="input-style flex justify-between items-center cursor-pointer mb-0">
                     <span id="countryText">Select Country</span>
                     <span>▼</span>
@@ -67,12 +77,12 @@
             <input type="password" id="signupConfirm" placeholder="Confirm Password" class="input-style">
             
             <button onclick="handleSignup()" class="action-btn">CREATE ACCOUNT</button>
-            <p class="text-[12px] text-gray-500 mt-6 text-center">Already have one? <span onclick="toggleForm()" class="text-cyan-400 cursor-pointer font-bold underline">Sign In</span></p>
+            <p class="text-[12px] text-gray-500 mt-6 text-center">Already have? <span onclick="toggleForm()" class="text-cyan-400 cursor-pointer font-bold underline">Sign In</span></p>
         </div>
     </div>
 
     <script>
-        // --- আপনার Firebase Config সেট করা হয়েছে ---
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyC2mVQ231K2kEqhxP01YJyiuZzsFK1RIcE",
             authDomain: "herovee-ai.firebaseapp.com",
@@ -90,6 +100,13 @@
         let isLogin = true;
         let selectedCountry = "";
         const countries = ["Bangladesh", "India", "USA", "UK", "Canada", "Australia", "UAE", "Saudi Arabia", "Singapore", "Malaysia"];
+
+        function showMessage(text, type = 'success') {
+            const alertBox = document.getElementById('customAlert');
+            alertBox.innerText = text;
+            alertBox.className = type === 'error' ? 'show error' : 'show';
+            setTimeout(() => alertBox.classList.remove('show'), 3500);
+        }
 
         function loadCountries() {
             const options = document.getElementById('countryOptions');
@@ -126,8 +143,8 @@
             const pass = document.getElementById('signupPass').value;
             const confirm = document.getElementById('signupConfirm').value;
 
-            if(pass !== confirm) return alert("পাসওয়ার্ড ম্যাচ করছে না!");
-            if(!selectedCountry) return alert("দেশ সিলেক্ট করুন!");
+            if(pass !== confirm) return showMessage("পাসওয়ার্ড ম্যাচ করছে না!", "error");
+            if(!selectedCountry) return showMessage("দেশ সিলেক্ট করুন!", "error");
 
             try {
                 const cred = await auth.createUserWithEmailAndPassword(email, pass);
@@ -135,12 +152,14 @@
                     fullName: name,
                     country: selectedCountry,
                     email: email,
-                    role: "User",
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                alert("স্বাগতম " + name + "! অ্যাকাউন্ট তৈরি হয়েছে।");
+                showMessage("স্বাগতম " + name + "! অ্যাকাউন্ট তৈরি হয়েছে।");
                 toggleForm();
-            } catch (err) { alert(err.message); }
+            } catch (err) { 
+                let msg = err.code === "auth/email-already-in-use" ? "এই ইমেইলটি ইতিপূর্বে ব্যবহার করা হয়েছে।" : err.message;
+                showMessage(msg, "error");
+            }
         }
 
         async function handleLogin() {
@@ -148,9 +167,9 @@
             const pass = document.getElementById('loginPass').value;
             try {
                 await auth.signInWithEmailAndPassword(email, pass);
-                alert("লগইন সফল! Herovee AI সিস্টেমে আপনাকে স্বাগতম।");
-                // এখানে আপনার চ্যাট পেইজের লিঙ্ক দিন
-            } catch (err) { alert("ভুল ইমেইল বা পাসওয়ার্ড!"); }
+                showMessage("লগইন সফল! Herovee AI সিস্টেমে আপনাকে স্বাগতম।");
+                // চ্যাট পেইজে রিডাইরেক্ট এখানে হবে
+            } catch (err) { showMessage("ভুল ইমেইল বা পাসওয়ার্ড!", "error"); }
         }
 
         window.onload = loadCountries;
