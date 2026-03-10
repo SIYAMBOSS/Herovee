@@ -27,14 +27,18 @@
         .input-style { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 12px 20px; margin-bottom: 15px; color: white; outline: none; transition: 0.3s; font-size: 14px; }
         .input-style:focus { border-color: #45f3ff; box-shadow: 0 0 10px rgba(69, 243, 255, 0.3); }
 
-        /* Custom Notification Toast */
-        #customAlert { position: fixed; top: 20px; right: -400px; background: rgba(17, 17, 17, 0.95); border-left: 5px solid #45f3ff; color: white; padding: 15px 25px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 9999; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); backdrop-filter: blur(10px); font-weight: 500; }
-        #customAlert.show { right: 20px; }
+        /* --- রেসপন্সিভ কাস্টম পপ-আপ স্টাইল --- */
+        #customAlert { position: fixed; z-index: 9999; background: rgba(17, 17, 17, 0.95); border-left: 5px solid #45f3ff; color: white; padding: 15px 25px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); backdrop-filter: blur(10px); font-weight: 500; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0; pointer-events: none; }
         #customAlert.error { border-left-color: #ff3c7b; }
 
+        @media (min-width: 768px) { #customAlert { top: 20px; right: -400px; } #customAlert.show { right: 20px; opacity: 1; pointer-events: auto; } }
+        @media (max-width: 767px) { #customAlert { top: -100px; left: 50%; transform: translateX(-50%); width: 90%; text-align: center; } #customAlert.show { top: 20px; opacity: 1; pointer-events: auto; } }
+
+        /* Buttons */
         .action-btn { width: 100%; padding: 14px; border-radius: 15px; border: none; background: linear-gradient(90deg, #45f3ff, #ff3c7b); color: white; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; letter-spacing: 1px; }
         .action-btn:active { transform: scale(0.95); }
 
+        /* Country List */
         .country-list { display: none; position: absolute; top: 110%; left: 0; background: #1a1a1a; border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; z-index: 100; max-height: 180px; overflow-y: auto; width: 100%; }
         .country-item { padding: 10px 20px; font-size: 14px; cursor: pointer; transition: 0.2s; }
         .country-item:hover { background: rgba(69, 243, 255, 0.1); color: #45f3ff; }
@@ -77,12 +81,12 @@
             <input type="password" id="signupConfirm" placeholder="Confirm Password" class="input-style">
             
             <button onclick="handleSignup()" class="action-btn">CREATE ACCOUNT</button>
-            <p class="text-[12px] text-gray-500 mt-6 text-center">Already have? <span onclick="toggleForm()" class="text-cyan-400 cursor-pointer font-bold underline">Sign In</span></p>
+            <p class="text-[12px] text-gray-500 mt-6 text-center">Already have one? <span onclick="toggleForm()" class="text-cyan-400 cursor-pointer font-bold underline">Sign In</span></p>
         </div>
     </div>
 
     <script>
-        // Firebase Configuration
+        // --- Firebase Config ---
         const firebaseConfig = {
             apiKey: "AIzaSyC2mVQ231K2kEqhxP01YJyiuZzsFK1RIcE",
             authDomain: "herovee-ai.firebaseapp.com",
@@ -101,6 +105,7 @@
         let selectedCountry = "";
         const countries = ["Bangladesh", "India", "USA", "UK", "Canada", "Australia", "UAE", "Saudi Arabia", "Singapore", "Malaysia"];
 
+        // কাস্টম মেসেজ লজিক
         function showMessage(text, type = 'success') {
             const alertBox = document.getElementById('customAlert');
             alertBox.innerText = text;
@@ -168,7 +173,6 @@
             try {
                 await auth.signInWithEmailAndPassword(email, pass);
                 showMessage("লগইন সফল! Herovee AI সিস্টেমে আপনাকে স্বাগতম।");
-                // চ্যাট পেইজে রিডাইরেক্ট এখানে হবে
             } catch (err) { showMessage("ভুল ইমেইল বা পাসওয়ার্ড!", "error"); }
         }
 
