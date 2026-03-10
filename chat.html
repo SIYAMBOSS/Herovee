@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Herovee AI Chat - Siyamboss</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="chat-bg">
+
+    <header class="chat-header">
+        <div class="flex items-center">
+            <div class="ai-avatar-glow">H</div>
+            <div class="ml-3">
+                <h1 class="text-cyan-400 font-bold text-lg leading-tight">HEROVEE AI</h1>
+                <p class="text-[10px] text-gray-400">System Active • API Rotator On</p>
+            </div>
+        </div>
+        <button onclick="logout()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-right-from-bracket"></i></button>
+    </header>
+
+    <div id="chatBox" class="chat-container">
+        <div class="msg ai-msg">
+            Hi Siyam Boss! I am Herovee AI. How can I help you today?
+        </div>
+    </div>
+
+    <div class="input-area">
+        <div class="flex items-center bg-[#1a1a1a] rounded-2xl p-2 border border-gray-800">
+            <textarea id="userInput" rows="1" placeholder="Type a message..." oninput="autoGrow(this)"></textarea>
+            <button id="sendBtn" onclick="sendMessage()" class="send-btn">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // আপনার ৫০টি API কী এখানে লিস্ট আকারে থাকবে
+        const apiKeys = [
+            "API_KEY_1", "API_KEY_2", "API_KEY_3", // ... ৫০টি কী এখানে দিন
+        ];
+        let currentKeyIndex = 0;
+
+        function autoGrow(element) {
+            element.style.height = "5px";
+            element.style.height = (element.scrollHeight) + "px";
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            // User Message display
+            addMessage(message, 'user-msg');
+            input.value = '';
+            input.style.height = "auto";
+
+            // AI Typing indicator
+            const loadingMsg = addMessage("Thinking...", 'ai-msg-loading');
+
+            // API Rotation Logic
+            const currentKey = apiKeys[currentKeyIndex];
+            
+            try {
+                // এখানে আপনার AI API কল হবে (যেমন Gemini বা GPT)
+                // উদাহরণ হিসেবে একটি mock response দেওয়া হলো:
+                setTimeout(() => {
+                    loadingMsg.remove();
+                    addMessage("This is a response using API Key " + (currentKeyIndex + 1), 'ai-msg');
+                    
+                    // কী রোটেশন: প্রতিবার মেসেজ পাঠানোর পর পরের কী-তে চলে যাবে
+                    currentKeyIndex = (currentKeyIndex + 1) % apiKeys.length;
+                }, 1000);
+
+            } catch (error) {
+                loadingMsg.innerText = "Error! Trying next API...";
+                currentKeyIndex = (currentKeyIndex + 1) % apiKeys.length;
+            }
+        }
+
+        function addMessage(text, className) {
+            const chatBox = document.getElementById('chatBox');
+            const div = document.createElement('div');
+            div.className = `msg ${className}`;
+            div.innerText = text;
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            return div;
+        }
+
+        function logout() {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
