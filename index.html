@@ -2,98 +2,73 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Herovee AI - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 </head>
 <body>
     <div class="orbit"></div>
     <div class="auth-card">
-        <h2 class="herovee-title text-4xl mb-8">HEROVEE</h2>
+        <h2 class="herovee-title">HEROVEE</h2>
         
-        <div id="loginFields" class="w-full">
-            <input type="email" id="loginEmail" placeholder="Gmail Address" class="input-style">
-            <input type="password" id="loginPass" placeholder="Password" class="input-style">
-            <button onclick="handleLogin()" class="action-btn">SIGN IN</button>
-            <p style="text-align:center; font-size:12px; margin-top:15px;">New? <span onclick="toggleForm()" style="color:#45f3ff; cursor:pointer;">Create Account</span></p>
+        <div id="loginForm" style="width:100%;">
+            <input type="email" id="lEmail" placeholder="Gmail Address" class="input-style" style="margin-bottom:12px;">
+            <div class="input-group">
+                <input type="password" id="lPass" placeholder="Password" class="input-style">
+                <i class="fa-solid fa-eye eye-icon" onclick="togglePass('lPass', this)"></i>
+            </div>
+            <button onclick="handleAuth()" class="action-btn">SIGN IN</button>
+            <p style="text-align:center; margin-top:15px; font-size:12px;">New? <span onclick="toggleView()" style="color:#45f3ff; cursor:pointer;">Create Account</span></p>
         </div>
 
-        <div id="signupFields" class="w-full" style="display: none;">
-            <div class="pass-container">
-                <input type="text" id="countryInput" placeholder="Select Country" class="input-style" readonly onclick="toggleCountryList()">
+        <div id="signupForm" style="display:none; width:100%;">
+            <div class="input-group">
+                <input type="text" id="countryInp" placeholder="Select Country" class="input-style" readonly onclick="showCountries()">
                 <div id="countryList" class="country-list"></div>
             </div>
-            <input type="text" id="signupName" placeholder="Full Name" class="input-style">
-            <input type="email" id="signupEmail" placeholder="Gmail Address" class="input-style">
-            <input type="password" id="signupPass" placeholder="Create Password" class="input-style">
-            <input type="password" id="confirmPass" placeholder="Confirm Password" class="input-style">
-            <button onclick="handleSignup()" class="action-btn">CREATE ACCOUNT</button>
-            <p style="text-align:center; font-size:12px; margin-top:15px;">Back to <span onclick="toggleForm()" style="color:#45f3ff; cursor:pointer;">Sign In</span></p>
+            <input type="text" placeholder="Full Name" class="input-style" style="margin-bottom:12px;">
+            <input type="email" placeholder="Gmail Address" class="input-style" style="margin-bottom:12px;">
+            <div class="input-group">
+                <input type="password" id="sPass" placeholder="Create Password" class="input-style">
+                <i class="fa-solid fa-eye eye-icon" onclick="togglePass('sPass', this)"></i>
+            </div>
+            <div class="input-group">
+                <input type="password" id="sConfirm" placeholder="Confirm Password" class="input-style">
+                <i class="fa-solid fa-eye eye-icon" onclick="togglePass('sConfirm', this)"></i>
+            </div>
+            <button onclick="handleAuth()" class="action-btn">CREATE ACCOUNT</button>
+            <p style="text-align:center; margin-top:15px; font-size:12px;">Back to <span onclick="toggleView()" style="color:#45f3ff; cursor:pointer;">Sign In</span></p>
         </div>
 
-        <div id="google_login_btn" onclick="handleGoogleLogin()">
+        <div id="google_login_btn" onclick="handleAuth()">
             <img src="https://img.icons8.com/color/48/000000/google-logo.png" width="30">
         </div>
     </div>
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyC2mVQ231K2kEqhxP01YJyiuZzsFK1RIcE",
-            authDomain: "herovee-ai.firebaseapp.com",
-            projectId: "herovee-ai",
-            appId: "1:89517868095:web:c0500e9a8dbb426cada48a"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-
-        // Country List Logic
-        const countries = ["Bangladesh", "India", "USA", "UK", "Canada", "Germany", "UAE"];
-        function loadCountries() {
-            const list = document.getElementById('countryList');
-            countries.forEach(c => {
-                const div = document.createElement('div');
-                div.className = 'country-item';
-                div.innerText = c;
-                div.onclick = () => {
-                    document.getElementById('countryInput').value = c;
-                    list.style.display = 'none';
-                };
-                list.appendChild(div);
-            });
+        function togglePass(id, el) {
+            const p = document.getElementById(id);
+            if(p.type === 'password') { p.type = 'text'; el.className = 'fa-solid fa-eye-slash eye-icon'; }
+            else { p.type = 'password'; el.className = 'fa-solid fa-eye eye-icon'; }
         }
-        function toggleCountryList() {
-            const list = document.getElementById('countryList');
-            list.style.display = list.style.display === 'block' ? 'none' : 'block';
-        }
-        loadCountries();
-
-        function toggleForm() {
-            const l = document.getElementById('loginFields'), s = document.getElementById('signupFields');
+        function toggleView() {
+            const l = document.getElementById('loginForm'), s = document.getElementById('signupForm');
             l.style.display = l.style.display === 'none' ? 'block' : 'none';
             s.style.display = s.style.display === 'none' ? 'block' : 'none';
         }
-
-        async function handleSignup() {
-            const pass = document.getElementById('signupPass').value;
-            const confirm = document.getElementById('confirmPass').value;
-            if(pass !== confirm) return alert("Passwords do not match!");
-            // Firebase signup logic here...
+        function showCountries() {
+            const list = document.getElementById('countryList');
+            list.style.display = list.style.display === 'block' ? 'none' : 'block';
+            if(list.innerHTML === "") {
+                ["Bangladesh", "India", "USA", "UK"].forEach(c => {
+                    let d = document.createElement('div'); d.className='country-item'; d.innerText=c;
+                    d.onclick = () => { document.getElementById('countryInp').value=c; list.style.display='none'; };
+                    list.appendChild(d);
+                });
+            }
         }
-
-        async function handleGoogleLogin() {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            provider.setCustomParameters({ prompt: 'select_account' });
-            try { await auth.signInWithPopup(provider); window.location.href = 'chat.html'; }
-            catch (err) { alert("Google Login Failed!"); }
-        }
-
-        async function handleLogin() {
-            const e = document.getElementById('loginEmail').value, p = document.getElementById('loginPass').value;
-            try { await auth.signInWithEmailAndPassword(e, p); window.location.href = 'chat.html'; }
-            catch (err) { alert("Login Failed!"); }
-        }
+        function handleAuth() { window.location.href='chat.html'; }
     </script>
 </body>
 </html>
