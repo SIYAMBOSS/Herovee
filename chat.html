@@ -3,33 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Herovee AI - Chat</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Herovee AI Chat - Siyamboss</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="chat-bg">
     <header class="chat-header">
-        <div class="flex items-center w-full justify-between">
-            <div class="flex items-center">
-                <div class="ai-avatar-glow">H</div>
-                <div class="ml-3">
-                    <h1 class="text-cyan-400 font-bold">HEROVEE AI SYSTEM</h1>
+        <div style="display:flex; align-items:center; width:100%; justify-content:space-between;">
+            <div style="display:flex; align-items:center;">
+                <div class="ai-avatar-glow" style="width:38px; height:38px; background:linear-gradient(45deg,#45f3ff,#ff3c7b); border-radius:12px; display:flex; align-items:center; justify-content:center; font-weight:bold; box-shadow: 0 0 10px #45f3ff;">H</div>
+                <div style="margin-left:12px;">
+                    <h1 style="color:#45f3ff; font-weight:bold; font-size:16px; letter-spacing:1px;">HEROVEE AI SYSTEM</h1>
+                    <p style="font-size:9px; color:#555; text-transform:uppercase;">Active • Siyam Boss</p>
                 </div>
             </div>
-            <i class="fa-solid fa-power-off text-gray-500" onclick="window.location.href='index.html'"></i>
+            <i class="fa-solid fa-power-off" style="color:#444; font-size:20px; cursor:pointer;" onclick="window.location.href='index.html'"></i>
         </div>
     </header>
 
     <div id="chatBox" class="chat-container">
-        <div class="msg ai-msg">আসসালামু আলাইকুম সিয়াম বস্! আমি আপনার HEROVEE AI।</div>
+        <div class="msg ai-msg">আসসালামু আলাইকুম সিয়াম বস্! আমি আপনার HEROVEE AI। আজ আপনাকে কীভাবে সাহায্য করতে পারি?</div>
     </div>
 
     <div class="input-area">
         <div class="input-wrapper">
             <label for="imageUpload" class="action-icon"><i class="fa-solid fa-camera"></i></label>
-            <input type="file" id="imageUpload" accept="image/*" class="hidden" onchange="previewImage(this)">
-            <textarea id="userInput" rows="1" placeholder="Type message..." oninput="autoGrow(this)"></textarea>
+            <input type="file" id="imageUpload" accept="image/*" style="display:none;" onchange="previewImage(this)">
+            
+            <textarea id="userInput" rows="1" placeholder="Type a message..." oninput="autoGrow(this)"></textarea>
+            
             <button onclick="sendMessage()" class="send-btn"><i class="fa-solid fa-paper-plane"></i></button>
         </div>
     </div>
@@ -37,8 +39,12 @@
     <script>
         let selectedImageData = null;
 
-        function autoGrow(e) { e.style.height = "5px"; e.style.height = (e.scrollHeight) + "px"; }
+        function autoGrow(e) { 
+            e.style.height = "5px"; 
+            e.style.height = (e.scrollHeight) + "px"; 
+        }
 
+        // ছবি সিলেক্ট করার লজিক
         function previewImage(input) {
             const file = input.files[0];
             if (file) {
@@ -46,38 +52,62 @@
                 reader.onload = (e) => { 
                     selectedImageData = e.target.result;
                     document.querySelector('.input-wrapper').style.borderColor = "#45f3ff";
+                    alert("ছবি সিলেক্ট হয়েছে! এখন টেক্সট লিখে সেন্ড করুন।");
                 };
                 reader.readAsDataURL(file);
             }
         }
 
+        // সেন্ড করার লজিক
         function sendMessage() {
             const input = document.getElementById('userInput');
             const msg = input.value.trim();
             if (!msg && !selectedImageData) return;
 
-            if (selectedImageData) addMedia(selectedImageData);
-            if (msg) addMessage(msg, 'user-msg');
+            // যদি ছবি থাকে সেটা আগে দেখাবে
+            if (selectedImageData) {
+                addMedia(selectedImageData);
+            }
 
-            input.value = ''; input.style.height = "auto";
+            // যদি টেক্সট থাকে সেটা দেখাবে
+            if (msg) {
+                addMessage(msg, 'user-msg');
+            }
+
+            // ইনপুট ক্লিয়ার করা
+            input.value = ''; 
+            input.style.height = "auto";
             selectedImageData = null;
             document.querySelector('.input-wrapper').style.borderColor = "#222";
 
-            setTimeout(() => addMessage("জি সিয়াম বস্, আমি দেখছি...", 'ai-msg'), 1000);
+            // AI Response
+            setTimeout(() => {
+                addMessage("জি সিয়াম বস্, আপনার তথ্য পেয়েছি। আমি এটি প্রসেস করছি...", 'ai-msg');
+            }, 800);
         }
 
         function addMessage(t, c) {
             const b = document.getElementById('chatBox');
             const d = document.createElement('div');
-            d.className = `msg ${c}`; d.innerText = t;
-            b.appendChild(d); b.scrollTop = b.scrollHeight;
+            d.className = `msg ${c}`; 
+            d.innerText = t;
+            b.appendChild(d);
+            scrollToBottom();
         }
 
         function addMedia(s) {
             const b = document.getElementById('chatBox');
             const i = document.createElement('img');
-            i.src = s; i.className = "media-msg";
-            b.appendChild(i); b.scrollTop = b.scrollHeight;
+            i.src = s; 
+            i.className = "media-msg";
+            b.appendChild(i);
+            scrollToBottom();
+        }
+
+        // অটো স্ক্রল করার ফাংশন
+        function scrollToBottom() {
+            const b = document.getElementById('chatBox');
+            b.scrollTop = b.scrollHeight;
         }
     </script>
 </body>
