@@ -1,17 +1,5 @@
-body { 
-    background: #050505; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    min-height: 100vh; 
-    font-family: 'Segoe UI', sans-serif; 
-    color: white; 
-    margin: 0; 
-    overflow: hidden; 
-    touch-action: pan-x pan-y; /* জুম প্রিভেন্ট করতে সাহায্য করে */
-}
+body { background: #050505; display: flex; align-items: center; justify-content: center; min-height: 100vh; font-family: 'Segoe UI', sans-serif; color: white; margin: 0; overflow: hidden; touch-action: pan-x pan-y; }
 
-/* Chrome/Safari-তে ইনপুট জুম বন্ধের জন্য */
 input { font-size: 16px !important; } 
 
 .herovee-title { 
@@ -27,108 +15,31 @@ input { font-size: 16px !important; }
 }
 @keyframes gradientShift { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
 
-.orbit { 
-    position: absolute; 
-    width: 410px; 
-    height: 620px; 
-    background: linear-gradient(0deg, transparent, #45f3ff, #ff3c7b); 
-    border-radius: 50%; 
-    z-index: 1; 
-    animation: rotate 4s linear infinite; 
-}
+.orbit { position: absolute; width: 410px; height: 620px; background: linear-gradient(0deg, transparent, #45f3ff, #ff3c7b); border-radius: 50%; z-index: 1; animation: rotate 4s linear infinite; }
 @keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-.auth-card { 
-    position: relative; 
-    width: 380px; 
-    min-height: 560px; 
-    background: #111; 
-    border-radius: 40px; 
-    z-index: 10; 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    justify-content: center; 
-    padding: 30px 25px; 
-    border: 1px solid rgba(255,255,255,0.05); 
-}
+.auth-card { position: relative; width: 380px; min-height: 560px; background: #111; border-radius: 40px; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px 25px; border: 1px solid rgba(255,255,255,0.05); }
 
-.input-style { 
-    width: 100%; 
-    background: rgba(255,255,255,0.05); 
-    border: 1px solid rgba(255,255,255,0.1); 
-    border-radius: 15px; 
-    padding: 14px 20px; 
-    margin-bottom: 12px; 
-    color: white; 
-    outline: none; 
-}
+/* Input Container for Password Eye */
+.pass-container { position: relative; width: 100%; margin-bottom: 12px; }
+.toggle-pass { position: absolute; right: 20px; top: 18px; color: #555; cursor: pointer; font-size: 14px; transition: 0.3s; }
+.toggle-pass:hover { color: #45f3ff; }
 
-.action-btn { 
-    width: 100%; 
-    padding: 15px; 
-    border-radius: 15px; 
-    background: linear-gradient(90deg, #45f3ff, #ff3c7b); 
-    color: white; 
-    font-weight: bold; 
-    cursor: pointer; 
-}
+.input-style { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 14px 20px; margin-bottom: 12px; color: white; outline: none; transition: 0.3s; }
+.input-style:focus { border-color: #45f3ff; background: rgba(255,255,255,0.08); }
 
-#google_login_btn {
-    width: 48px;
-    height: 48px;
-    background: #1a1a1a;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 20px;
-    border: 1px solid rgba(255,255,255,0.1);
-}
+.action-btn { width: 100%; padding: 15px; border-radius: 15px; background: linear-gradient(90deg, #45f3ff, #ff3c7b); color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
+.action-btn:active { transform: scale(0.98); }
 
-.country-list { 
-    display: none; 
-    position: absolute; 
-    top: 100%; 
-    left: 0; 
-    width: 100%; 
-    background: #1a1a1a; 
-    border-radius: 15px; 
-    z-index: 50; 
-    max-height: 200px; 
-    overflow-y: auto; 
-    border: 1px solid #333;
-}
-.country-search-input {
-    width: 100%;
-    padding: 10px;
-    background: #222;
-    border: none;
-    border-bottom: 1px solid #333;
-    color: #45f3ff;
-    outline: none;
-    position: sticky;
-    top: 0;
-}
-.country-item { padding: 12px; cursor: pointer; font-size: 13px; border-bottom: 1px solid #222; }
-.country-item:hover { background: #45f3ff22; }
+#google_login_btn { width: 48px; height: 48px; background: #1a1a1a; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; margin-top: 20px; border: 1px solid rgba(255,255,255,0.1); }
 
-#customAlert { 
-    position: fixed; 
-    top: -100px; 
-    left: 50%; 
-    transform: translateX(-50%); 
-    width: 85%; 
-    background: #111; 
-    border-left: 5px solid #45f3ff; 
-    color: white; 
-    padding: 15px; 
-    border-radius: 10px; 
-    text-align: center; 
-    z-index: 9999; 
-    transition: 0.5s; 
-}
+/* Country Dropdown */
+.country-list { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: #1a1a1a; border-radius: 15px; z-index: 50; max-height: 200px; overflow-y: auto; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.country-search-input { width: 100%; padding: 12px; background: #222; border: none; border-bottom: 1px solid #333; color: #45f3ff; outline: none; position: sticky; top: 0; }
+.country-item { padding: 12px 20px; cursor: pointer; font-size: 13px; border-bottom: 1px solid #222; transition: 0.2s; }
+.country-item:hover { background: rgba(69, 243, 255, 0.1); color: #45f3ff; }
+
+#customAlert { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); width: 85%; background: #111; border-left: 5px solid #45f3ff; color: white; padding: 15px; border-radius: 10px; text-align: center; z-index: 9999; transition: 0.5s; }
 #customAlert.show { top: 20px; }
 #customAlert.error { border-left-color: #ff3c7b; }
 
