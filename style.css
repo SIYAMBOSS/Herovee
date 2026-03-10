@@ -1,65 +1,68 @@
-/* Project: HEROVEE AI | Dev: Siyamboss */
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Segoe+UI&display=swap');
+/* Project: HEROVEE AI SYSTEM | Developer: Siyamboss */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Segoe+UI:wght@400;600&display=swap');
 
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body { background: #050505; height: 100vh; font-family: 'Segoe UI', sans-serif; color: white; overflow: hidden; }
 
-/* লগইন এনিমেশন */
+/* --- Login & Signup Interface --- */
 .orbit { 
-    position: absolute; width: 420px; height: 620px; 
+    position: absolute; width: 450px; height: 650px; 
     background: linear-gradient(0deg, transparent, #45f3ff, #ff3c7b); 
-    border-radius: 50%; z-index: 1; animation: rotate 4s linear infinite; 
-    left: 50%; top: 50%; margin: -310px 0 0 -210px;
+    border-radius: 50%; z-index: 1; animation: rotateOrbit 4s linear infinite; 
+    left: 50%; top: 50%; margin: -325px 0 0 -225px;
 }
-@keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes rotateOrbit { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
 .auth-card { 
-    position: relative; width: 380px; min-height: 600px; background: #111; 
+    position: relative; width: 380px; min-height: 620px; background: #111; 
     border-radius: 40px; z-index: 10; display: flex; flex-direction: column; 
     align-items: center; padding: 40px 30px; border: 1px solid rgba(255,255,255,0.05); margin: 5vh auto;
 }
 
 .herovee-title { 
-    font-family: 'Orbitron', sans-serif; letter-spacing: 5px; 
+    font-family: 'Orbitron', sans-serif; letter-spacing: 5px; font-size: 35px;
     background: linear-gradient(90deg, #45f3ff, #ff3c7b, #45f3ff); 
-    background-size: 200%; -webkit-background-clip: text; color: transparent; 
-    animation: shift 3s linear infinite; text-shadow: 0 0 15px rgba(69,243,255,0.4); 
+    background-size: 200% auto; -webkit-background-clip: text; color: transparent; 
+    animation: shift 3s linear infinite; margin-bottom: 30px;
 }
 @keyframes shift { 0% { background-position: 0%; } 100% { background-position: 200%; } }
 
-/* ইনপুট ও কান্ট্রি লিস্ট */
+.input-group { position: relative; width: 100%; margin-bottom: 12px; }
 .input-style { 
     width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); 
-    border-radius: 15px; padding: 14px 20px; margin-bottom: 12px; color: white; outline: none; 
+    border-radius: 15px; padding: 14px 20px; color: white; outline: none; 
 }
+.eye-icon { position: absolute; right: 15px; top: 15px; color: #555; cursor: pointer; }
+
 .country-list { 
     display: none; position: absolute; width: 100%; background: #1a1a1a; 
-    border-radius: 12px; z-index: 100; max-height: 150px; overflow-y: auto; border: 1px solid #333; 
+    border-radius: 12px; z-index: 100; max-height: 150px; overflow-y: auto; border: 1px solid #333; top: 55px;
 }
 .country-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #222; }
-.country-item:hover { background: #222; color: #45f3ff; }
+.country-item:hover { color: #45f3ff; }
 
 .action-btn { 
     width: 100%; padding: 15px; border-radius: 15px; background: linear-gradient(90deg, #45f3ff, #ff3c7b); 
     color: white; font-weight: bold; border: none; cursor: pointer; text-transform: uppercase;
 }
 
-#google_login_btn { margin-top: 50px; background: white; padding: 12px; border-radius: 50%; cursor: pointer; }
+#google_login_btn { margin-top: 50px; background: white; padding: 12px; border-radius: 50%; cursor: pointer; display: flex; }
 
-/* চ্যাট ইন্টারফেস */
+/* --- Chat Interface --- */
 .chat-header { padding: 15px 20px; background: #0d0d0d; border-bottom: 1px solid #1a1a1a; display: flex; align-items: center; justify-content: space-between; }
-.chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; height: calc(100vh - 160px); }
-.msg { max-width: 80%; padding: 12px 16px; border-radius: 20px; font-size: 14.5px; }
+.chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; height: calc(100vh - 160px); scroll-behavior: smooth; }
+
+.msg { max-width: 80%; padding: 12px 16px; border-radius: 20px; font-size: 15px; line-height: 1.5; }
 .ai-msg { background: #1a1a1a; align-self: flex-start; border-bottom-left-radius: 4px; }
 .user-msg { background: linear-gradient(135deg, #00d2ff, #3a7bd5); align-self: flex-end; border-bottom-right-radius: 4px; }
-.media-msg { max-width: 180px; border-radius: 12px; border: 2px solid #45f3ff; align-self: flex-end; }
+.media-msg { max-width: 180px; border-radius: 15px; border: 2px solid #45f3ff; align-self: flex-end; }
 
-/* ইমেজ প্রিভিউ বক্স */
+/* Preview */
 .image-preview-box { display: none; padding: 10px; background: rgba(0,0,0,0.8); border-radius: 15px; margin: 10px; width: fit-content; border: 1px dashed #45f3ff; }
 .preview-item { position: relative; width: 60px; height: 60px; }
 .preview-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
 .close-preview { position: absolute; top: -8px; right: -8px; color: #ff3c7b; background: #000; border-radius: 50%; cursor: pointer; }
 
-.input-area { position: fixed; bottom: 0; width: 100%; padding: 15px; background: #050505; border-top: 1px solid #111; }
+.input-area { position: fixed; bottom: 0; width: 100%; padding: 15px; background: #050505; }
 .input-wrapper { background: #121212; border-radius: 30px; display: flex; align-items: center; padding: 5px 15px; border: 1px solid #222; }
 textarea { flex: 1; background: transparent; border: none; outline: none; color: white; padding: 10px; resize: none; }
