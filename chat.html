@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Herovee AI Chat - Siyamboss</title>
+    <title>Herovee AI Chat</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -11,27 +11,23 @@
     <header class="chat-header">
         <div style="display:flex; align-items:center; width:100%; justify-content:space-between;">
             <div style="display:flex; align-items:center;">
-                <div class="ai-avatar-glow" style="width:38px; height:38px; background:linear-gradient(45deg,#45f3ff,#ff3c7b); border-radius:12px; display:flex; align-items:center; justify-content:center; font-weight:bold; box-shadow: 0 0 10px #45f3ff;">H</div>
-                <div style="margin-left:12px;">
-                    <h1 style="color:#45f3ff; font-weight:bold; font-size:16px; letter-spacing:1px;">HEROVEE AI SYSTEM</h1>
-                    <p style="font-size:9px; color:#555; text-transform:uppercase;">Active • Siyam Boss</p>
-                </div>
+                <div class="ai-avatar-glow">H</div>
+                <h1 style="color:#45f3ff; margin-left:10px; font-weight:bold;">HEROVEE AI SYSTEM</h1>
             </div>
-            <i class="fa-solid fa-power-off" style="color:#444; font-size:20px; cursor:pointer;" onclick="window.location.href='index.html'"></i>
+            <i class="fa-solid fa-power-off" style="color:#555;" onclick="window.location.href='index.html'"></i>
         </div>
     </header>
 
     <div id="chatBox" class="chat-container">
-        <div class="msg ai-msg">আসসালামু আলাইকুম সিয়াম বস্! আমি আপনার HEROVEE AI। আজ আপনাকে কীভাবে সাহায্য করতে পারি?</div>
+        <div class="msg ai-msg">আসসালামু আলাইকুম সিয়াম বস্! ছবি সিলেক্ট করলে এখন প্রিভিউ দেখাবে।</div>
     </div>
 
     <div class="input-area">
+        <div id="imagePreviewContainer" class="image-preview-box"></div>
         <div class="input-wrapper">
             <label for="imageUpload" class="action-icon"><i class="fa-solid fa-camera"></i></label>
-            <input type="file" id="imageUpload" accept="image/*" style="display:none;" onchange="previewImage(this)">
-            
-            <textarea id="userInput" rows="1" placeholder="Type a message..." oninput="autoGrow(this)"></textarea>
-            
+            <input type="file" id="imageUpload" accept="image/*" style="display:none;" onchange="handleImageSelect(this)">
+            <textarea id="userInput" rows="1" placeholder="Type message..." oninput="autoGrow(this)"></textarea>
             <button onclick="sendMessage()" class="send-btn"><i class="fa-solid fa-paper-plane"></i></button>
         </div>
     </div>
@@ -39,72 +35,63 @@
     <script>
         let selectedImageData = null;
 
-        function autoGrow(e) { 
-            e.style.height = "5px"; 
-            e.style.height = (e.scrollHeight) + "px"; 
-        }
+        function autoGrow(e) { e.style.height = "5px"; e.style.height = (e.scrollHeight) + "px"; }
 
-        // ছবি সিলেক্ট করার লজিক
-        function previewImage(input) {
+        function handleImageSelect(input) {
             const file = input.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (e) => { 
                     selectedImageData = e.target.result;
+                    const previewBox = document.getElementById('imagePreviewContainer');
+                    previewBox.innerHTML = `
+                        <div class="preview-item">
+                            <img src="${selectedImageData}">
+                            <div class="loading-overlay"><i class="fa-solid fa-spinner fa-spin"></i></div>
+                            <i class="fa-solid fa-circle-xmark close-preview" onclick="removeImage()"></i>
+                        </div>`;
+                    previewBox.style.display = "block";
                     document.querySelector('.input-wrapper').style.borderColor = "#45f3ff";
-                    alert("ছবি সিলেক্ট হয়েছে! এখন টেক্সট লিখে সেন্ড করুন।");
                 };
                 reader.readAsDataURL(file);
             }
         }
 
-        // সেন্ড করার লজিক
+        function removeImage() {
+            selectedImageData = null;
+            document.getElementById('imagePreviewContainer').style.display = "none";
+            document.querySelector('.input-wrapper').style.borderColor = "#222";
+        }
+
         function sendMessage() {
             const input = document.getElementById('userInput');
             const msg = input.value.trim();
             if (!msg && !selectedImageData) return;
 
-            // যদি ছবি থাকে সেটা আগে দেখাবে
-            if (selectedImageData) {
-                addMedia(selectedImageData);
-            }
+            if (selectedImageData) addMedia(selectedImageData);
+            if (msg) addMessage(msg, 'user-msg');
 
-            // যদি টেক্সট থাকে সেটা দেখাবে
-            if (msg) {
-                addMessage(msg, 'user-msg');
-            }
-
-            // ইনপুট ক্লিয়ার করা
-            input.value = ''; 
-            input.style.height = "auto";
-            selectedImageData = null;
-            document.querySelector('.input-wrapper').style.borderColor = "#222";
-
-            // AI Response
-            setTimeout(() => {
-                addMessage("জি সিয়াম বস্, আপনার তথ্য পেয়েছি। আমি এটি প্রসেস করছি...", 'ai-msg');
-            }, 800);
+            removeImage();
+            input.value = ''; input.style.height = "auto";
+            scrollToBottom();
+            
+            setTimeout(() => { addMessage("জি সিয়াম বস্, আমি দেখছি...", 'ai-msg'); }, 1000);
         }
 
         function addMessage(t, c) {
             const b = document.getElementById('chatBox');
             const d = document.createElement('div');
-            d.className = `msg ${c}`; 
-            d.innerText = t;
-            b.appendChild(d);
-            scrollToBottom();
+            d.className = `msg ${c}`; d.innerText = t;
+            b.appendChild(d); scrollToBottom();
         }
 
         function addMedia(s) {
             const b = document.getElementById('chatBox');
             const i = document.createElement('img');
-            i.src = s; 
-            i.className = "media-msg";
-            b.appendChild(i);
-            scrollToBottom();
+            i.src = s; i.className = "media-msg";
+            b.appendChild(i); scrollToBottom();
         }
 
-        // অটো স্ক্রল করার ফাংশন
         function scrollToBottom() {
             const b = document.getElementById('chatBox');
             b.scrollTop = b.scrollHeight;
