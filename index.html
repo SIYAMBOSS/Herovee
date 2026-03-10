@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Herovee AI - Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -12,14 +12,18 @@
     <div class="auth-card">
         <h2 class="herovee-title">HEROVEE</h2>
         
-        <div id="loginForm" style="width:100%;">
-            <input type="email" id="lEmail" placeholder="Gmail Address" class="input-style" style="margin-bottom:12px;">
+        <div id="loginForm" style="width:100%; display: flex; flex-direction: column; align-items: center;">
+            <div class="input-group">
+                <input type="email" id="lEmail" placeholder="Gmail Address" class="input-style">
+            </div>
             <div class="input-group">
                 <input type="password" id="lPass" placeholder="Password" class="input-style">
-                <i class="fa-solid fa-eye eye-icon" onclick="togglePass('lPass', this)"></i>
+                <i class="fa-solid fa-eye-slash eye-icon" onclick="togglePass('lPass', this)"></i>
             </div>
             <button onclick="handleAuth()" class="action-btn">SIGN IN</button>
-            <p style="text-align:center; margin-top:15px; font-size:12px;">New? <span onclick="toggleView()" style="color:#45f3ff; cursor:pointer;">Create Account</span></p>
+            <p style="text-align:center; margin-top:22px; font-size:12px; color: #888;">
+                New? <span onclick="toggleAuth()" style="color:#45f3ff; cursor:pointer; font-weight:bold;">Create Account</span>
+            </p>
         </div>
 
         <div id="signupForm" style="display:none; width:100%;">
@@ -27,18 +31,20 @@
                 <input type="text" id="countryInp" placeholder="Select Country" class="input-style" readonly onclick="showCountries()">
                 <div id="countryList" class="country-list"></div>
             </div>
-            <input type="text" placeholder="Full Name" class="input-style" style="margin-bottom:12px;">
-            <input type="email" placeholder="Gmail Address" class="input-style" style="margin-bottom:12px;">
+            <input type="text" placeholder="Full Name" class="input-style">
+            <input type="email" placeholder="Gmail Address" class="input-style">
             <div class="input-group">
                 <input type="password" id="sPass" placeholder="Create Password" class="input-style">
-                <i class="fa-solid fa-eye eye-icon" onclick="togglePass('sPass', this)"></i>
+                <i class="fa-solid fa-eye-slash eye-icon" onclick="togglePass('sPass', this)"></i>
             </div>
             <div class="input-group">
                 <input type="password" id="sConfirm" placeholder="Confirm Password" class="input-style">
-                <i class="fa-solid fa-eye eye-icon" onclick="togglePass('sConfirm', this)"></i>
+                <i class="fa-solid fa-eye-slash eye-icon" onclick="togglePass('sConfirm', this)"></i>
             </div>
             <button onclick="handleAuth()" class="action-btn">CREATE ACCOUNT</button>
-            <p style="text-align:center; margin-top:15px; font-size:12px;">Back to <span onclick="toggleView()" style="color:#45f3ff; cursor:pointer;">Sign In</span></p>
+            <p style="text-align:center; margin-top:22px; font-size:12px; color: #888;">
+                Back to <span onclick="toggleAuth()" style="color:#45f3ff; cursor:pointer; font-weight:bold;">Sign In</span>
+            </p>
         </div>
 
         <div id="google_login_btn" onclick="handleAuth()">
@@ -47,21 +53,23 @@
     </div>
 
     <script>
+        const allCountries = ["Afghanistan","Albania","Algeria","Andorra","Angola","Argentina","Armenia","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burundi","Cambodia","Cameroon","Canada","Cape Verde","Central African Rep","Chad","Chile","China","Colombia","Comoros","Congo","Costa Rica","Croatia","Cuba","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","East Timor","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Ethiopia","Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Honduras","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Ivory Coast","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati","Korea North","Korea South","Kosovo","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macedonia","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria","Norway","Oman","Pakistan","Palau","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Romania","Russian Federation","Rwanda","St Kitts & Nevis","St Lucia","Saint Vincent","Samoa","San Marino","Sao Tome & Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Sudan","Spain","Sri Lanka","Sudan","Suriname","Swaziland","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Togo","Tonga","Trinidad & Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Yemen","Zambia","Zimbabwe"];
+
         function togglePass(id, el) {
             const p = document.getElementById(id);
-            if(p.type === 'password') { p.type = 'text'; el.className = 'fa-solid fa-eye-slash eye-icon'; }
-            else { p.type = 'password'; el.className = 'fa-solid fa-eye eye-icon'; }
+            if(p.type === 'password') { p.type = 'text'; el.className = 'fa-solid fa-eye eye-icon'; }
+            else { p.type = 'password'; el.className = 'fa-solid fa-eye-slash eye-icon'; }
         }
-        function toggleView() {
+        function toggleAuth() {
             const l = document.getElementById('loginForm'), s = document.getElementById('signupForm');
-            l.style.display = l.style.display === 'none' ? 'block' : 'none';
+            l.style.display = l.style.display === 'none' ? 'flex' : 'none';
             s.style.display = s.style.display === 'none' ? 'block' : 'none';
         }
         function showCountries() {
             const list = document.getElementById('countryList');
             list.style.display = list.style.display === 'block' ? 'none' : 'block';
             if(list.innerHTML === "") {
-                ["Bangladesh", "India", "USA", "UK"].forEach(c => {
+                allCountries.forEach(c => {
                     let d = document.createElement('div'); d.className='country-item'; d.innerText=c;
                     d.onclick = () => { document.getElementById('countryInp').value=c; list.style.display='none'; };
                     list.appendChild(d);
