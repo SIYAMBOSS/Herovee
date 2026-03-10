@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -23,7 +24,12 @@
         
         <div id="loginFields">
             <input type="email" id="loginEmail" placeholder="Gmail Address" class="input-style">
-            <input type="password" id="loginPass" placeholder="Password" class="input-style">
+            
+            <div class="pass-container">
+                <input type="password" id="loginPass" placeholder="Password" class="input-style pr-12">
+                <i class="fa-solid fa-eye-slash toggle-pass" onclick="togglePassword('loginPass', this)"></i>
+            </div>
+
             <button onclick="handleLogin()" class="action-btn">SIGN IN</button>
             <p class="text-[12px] text-gray-500 mt-6 text-center">New here? <span onclick="toggleForm()" class="text-cyan-400 cursor-pointer font-bold underline">Create Account</span></p>
         </div>
@@ -34,7 +40,7 @@
             <div class="relative w-full mb-3">
                 <div onclick="toggleCountryList()" id="countryBox" class="input-style flex justify-between items-center cursor-pointer mb-0">
                     <span id="countryText">Select Country</span>
-                    <span>▼</span>
+                    <i class="fa-solid fa-chevron-down text-[12px] text-cyan-400"></i>
                 </div>
                 <div id="countryList" class="country-list">
                     <input type="text" id="countrySearch" onkeyup="filterCountries()" placeholder="Search country..." class="country-search-input">
@@ -43,8 +49,17 @@
             </div>
 
             <input type="email" id="signupEmail" placeholder="Gmail Address" class="input-style">
-            <input type="password" id="signupPass" placeholder="Password" class="input-style">
-            <input type="password" id="signupConfirm" placeholder="Confirm Password" class="input-style">
+            
+            <div class="pass-container">
+                <input type="password" id="signupPass" placeholder="Password" class="input-style pr-12">
+                <i class="fa-solid fa-eye-slash toggle-pass" onclick="togglePassword('signupPass', this)"></i>
+            </div>
+
+            <div class="pass-container">
+                <input type="password" id="signupConfirm" placeholder="Confirm Password" class="input-style pr-12">
+                <i class="fa-solid fa-eye-slash toggle-pass" onclick="togglePassword('signupConfirm', this)"></i>
+            </div>
+
             <button onclick="handleSignup()" class="action-btn">CREATE ACCOUNT</button>
             <p class="text-[12px] text-gray-500 mt-4 text-center">Back to <span onclick="toggleForm()" class="text-cyan-400 cursor-pointer font-bold underline">Sign In</span></p>
         </div>
@@ -69,8 +84,19 @@
         const db = firebase.firestore();
 
         let selectedCountry = "";
-        
-        // World Countries API fetch or Static List
+
+        // Password Toggle Function
+        function togglePassword(id, el) {
+            const input = document.getElementById(id);
+            if (input.type === "password") {
+                input.type = "text";
+                el.classList.replace("fa-eye-slash", "fa-eye");
+            } else {
+                input.type = "password";
+                el.classList.replace("fa-eye", "fa-eye-slash");
+            }
+        }
+
         async function loadAllCountries() {
             try {
                 const res = await fetch('https://restcountries.com/v3.1/all?fields=name');
@@ -81,11 +107,15 @@
                     `<div class="country-item" onclick="setCountry('${name}')">${name}</div>`
                 ).join('');
             } catch (e) {
-                const backup = ["Bangladesh", "India", "USA", "UK", "Canada"];
-                document.getElementById('countryOptions').innerHTML = backup.map(name => 
-                    `<div class="country-item" onclick="setCountry('${name}')">${name}</div>`
-                ).join('');
+                document.getElementById('countryOptions').innerHTML = `<div class="country-item" onclick="setCountry('Bangladesh')">Bangladesh</div>`;
             }
+        }
+
+        function setCountry(name) {
+            selectedCountry = name;
+            document.getElementById('countryText').innerText = name;
+            document.getElementById('countryBox').style.borderColor = "#45f3ff";
+            toggleCountryList(); 
         }
 
         function filterCountries() {
@@ -96,10 +126,9 @@
             }
         }
 
-        function setCountry(name) {
-            selectedCountry = name;
-            document.getElementById('countryText').innerText = name;
-            toggleCountryList();
+        function toggleCountryList() {
+            const list = document.getElementById('countryList');
+            list.style.display = (list.style.display === 'block') ? 'none' : 'block';
         }
 
         function showMessage(text, type = 'success') {
@@ -109,15 +138,7 @@
             setTimeout(() => alertBox.classList.remove('show'), 3500);
         }
 
-        async function handleGoogleLogin() {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            provider.setCustomParameters({ prompt: 'select_account' });
-            try {
-                await auth.signInWithPopup(provider);
-                showMessage("Login Successful!");
-            } catch (err) { showMessage("Google Login Failed!", "error"); }
-        }
-
+        // --- Auth Handlers ---
         async function handleLogin() {
             const email = document.getElementById('loginEmail').value;
             const pass = document.getElementById('loginPass').value;
@@ -132,10 +153,8 @@
             const email = document.getElementById('signupEmail').value;
             const pass = document.getElementById('signupPass').value;
             const confirm = document.getElementById('signupConfirm').value;
-
             if(!name || !selectedCountry) return showMessage("Fill all details", "error");
             if(pass !== confirm) return showMessage("Passwords do not match", "error");
-
             try {
                 const cred = await auth.createUserWithEmailAndPassword(email, pass);
                 await db.collection("users").doc(cred.user.uid).set({
@@ -146,15 +165,19 @@
             } catch (err) { showMessage(err.message, "error"); }
         }
 
+        async function handleGoogleLogin() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            provider.setCustomParameters({ prompt: 'select_account' });
+            try {
+                await auth.signInWithPopup(provider);
+                showMessage("Google Login Successful!");
+            } catch (err) { showMessage("Failed!", "error"); }
+        }
+
         function toggleForm() {
             const isL = document.getElementById('loginFields').style.display !== 'none';
             document.getElementById('loginFields').style.display = isL ? 'none' : 'block';
             document.getElementById('signupFields').style.display = isL ? 'block' : 'none';
-        }
-
-        function toggleCountryList() {
-            const list = document.getElementById('countryList');
-            list.style.display = list.style.display === 'block' ? 'none' : 'block';
         }
 
         window.onload = loadAllCountries;
