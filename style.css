@@ -193,3 +193,59 @@ textarea {
     transition: 0.3s;
 }
 .send-btn:hover { transform: scale(1.1); background: #ff3c7b; color: white; }
+.chat-bg { background: #0a0a0a; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+
+.chat-header { 
+    padding: 15px 20px; 
+    background: #111; 
+    border-bottom: 1px solid #222; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+}
+
+.ai-avatar-glow { 
+    width: 35px; height: 35px; 
+    background: linear-gradient(45deg, #45f3ff, #ff3c7b); 
+    border-radius: 10px; 
+    display: flex; align-items: center; justify-content: center; 
+    font-weight: bold; color: white; 
+    box-shadow: 0 0 10px rgba(69, 243, 255, 0.5);
+}
+
+.chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+
+.msg { max-width: 80%; padding: 12px 16px; border-radius: 18px; font-size: 14px; line-height: 1.5; }
+.ai-msg { background: #1a1a1a; align-self: flex-start; color: #eee; border-bottom-left-radius: 2px; }
+.user-msg { background: linear-gradient(45deg, #45f3ff, #0099ff); align-self: flex-end; color: white; border-bottom-right-radius: 2px; }
+
+.user-img { max-width: 80%; border-radius: 18px; align-self: flex-end; margin-bottom: 15px; }
+
+.input-area { padding: 15px; background: #0a0a0a; border-top: 1px solid #222; position: sticky; bottom: 0; }
+.input-container { flex: 1; background: #1a1a1a; border-radius: 2xl; p-2; border: 1px solid gray-800; display: flex; align-items: center; }
+
+textarea { 
+    flex: 1; background: transparent; border: none; outline: none; 
+    color: white; padding: 10px; resize: none; max-height: 150px; font-size: 15px;
+}
+
+.icon-btn { 
+    width: 40px; height: 40px; 
+    background: transparent; color: #555; 
+    border-radius: 12px; display: flex; 
+    align-items: center; justify-content: center; 
+    transition: 0.3s;
+}
+.icon-btn:hover { color: #45f3ff; }
+
+.send-btn { 
+    width: 40px; height: 40px; 
+    background: #45f3ff; color: #000; 
+    border-radius: 12px; display: flex; 
+    align-items: center; justify-content: center; 
+    transition: 0.3s; margin-left: auto;
+}
+.send-btn:hover { transform: scale(1.1); background: #ff3c7b; color: white; }
+
+.hidden-input { display: none; }
+
