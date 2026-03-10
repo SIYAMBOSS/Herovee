@@ -15,30 +15,34 @@
 <body class="chat-bg">
 
     <header class="chat-header">
-        <div class="flex items-center">
-            <div class="ai-avatar-glow">H</div>
-            <div class="ml-3">
-                <h1 class="text-cyan-400 font-bold text-lg leading-tight">HEROVEE AI</h1>
-                <p class="text-[10px] text-gray-400">System Active • API Rotator On</p>
+        <div class="flex items-center w-full justify-between">
+            <div class="flex items-center">
+                <div class="ai-avatar-glow">H</div>
+                <div class="ml-3">
+                    <h1 class="text-cyan-400 font-bold text-lg tracking-widest">HEROVEE AI SYSTEM</h1>
+                    <p class="text-[9px] text-gray-500 uppercase tracking-tighter">Active • Siyam Boss Edition</p>
+                </div>
             </div>
+            <button onclick="logout()" class="text-gray-500 hover:text-red-500 transition-all">
+                <i class="fa-solid fa-power-off text-xl"></i>
+            </button>
         </div>
-        <button onclick="logout()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-right-from-bracket"></i></button>
     </header>
 
     <div id="chatBox" class="chat-container">
         <div class="msg ai-msg">
-            Hi Siyam Boss! I am Herovee AI. How can I help you today?
+            আসসালামু আলাইকুম সিয়াম বস্! HEROVEE AI এখন প্রস্তুত। আপনি যেভাবে ছবি বা টেক্সট দিতে চান, আমি সেভাবেই রেসপন্স করব।
         </div>
     </div>
 
     <div class="input-area">
-        <div class="input-container">
-            <label for="imageUpload" class="icon-btn image-btn">
-                <i class="fa-solid fa-camera"></i>
+        <div class="input-wrapper">
+            <label for="imageUpload" class="action-icon">
+                <i class="fa-solid fa-camera-retro"></i>
             </label>
-            <input type="file" id="imageUpload" accept="image/*" class="hidden-input" onchange="handleImage(this)">
+            <input type="file" id="imageUpload" accept="image/*" class="hidden" onchange="previewImage(this)">
             
-            <textarea id="userInput" rows="1" placeholder="Type a message..." oninput="autoGrow(this)"></textarea>
+            <textarea id="userInput" rows="1" placeholder="Type message..." oninput="autoGrow(this)"></textarea>
             
             <button id="sendBtn" onclick="sendMessage()" class="send-btn">
                 <i class="fa-solid fa-paper-plane"></i>
@@ -47,7 +51,7 @@
     </div>
 
     <script>
-        // আপনার ফায়ারবেস কনফিগারেশন
+        // Firebase Config (Keep as is)
         const firebaseConfig = {
             apiKey: "AIzaSyC2mVQ231K2kEqhxP01YJyiuZzsFK1RIcE",
             authDomain: "herovee-ai.firebaseapp.com",
@@ -56,20 +60,22 @@
             messagingSenderId: "89517868095",
             appId: "1:89517868095:web:c0500e9a8dbb426cada48a"
         };
-        
         firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-
-        // আপনার ৫০টি API কী এখানে লিস্ট আকারে থাকবে
-        const apiKeys = [
-            "API_KEY_1", "API_KEY_2", "API_KEY_3", // ... ৫০টি কী এখানে দিন
-        ];
-        let currentKeyIndex = 0;
 
         function autoGrow(element) {
             element.style.height = "5px";
             element.style.height = (element.scrollHeight) + "px";
+        }
+
+        function previewImage(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    addMedia(e.target.result, 'user-img');
+                }
+                reader.readAsDataURL(file);
+            }
         }
 
         async function sendMessage() {
@@ -77,43 +83,14 @@
             const message = input.value.trim();
             if (!message) return;
 
-            // User Message display
             addMessage(message, 'user-msg');
             input.value = '';
             input.style.height = "auto";
 
-            // AI Typing indicator
-            const loadingMsg = addMessage("Thinking...", 'ai-msg-loading');
-
-            // API Rotation Logic
-            const currentKey = apiKeys[currentKeyIndex];
-            
-            try {
-                // এখানে আপনার AI API কল হবে (যেমন Gemini বা GPT)
-                // উদাহরণ হিসেবে একটি mock response দেওয়া হলো:
-                setTimeout(() => {
-                    loadingMsg.remove();
-                    addMessage("This is a response using API Key " + (currentKeyIndex + 1), 'ai-msg');
-                    
-                    // কী রোটেশন: প্রতিবার মেসেজ পাঠানোর পর পরের কী-তে চলে যাবে
-                    currentKeyIndex = (currentKeyIndex + 1) % apiKeys.length;
-                }, 1000);
-
-            } catch (error) {
-                loadingMsg.innerText = "Error! Trying next API...";
-                currentKeyIndex = (currentKeyIndex + 1) % apiKeys.length;
-            }
-        }
-
-        function handleImage(input) {
-            const file = input.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    addImage(e.target.result, 'user-img');
-                }
-                reader.readAsDataURL(file);
-            }
+            // AI Logic placeholder
+            setTimeout(() => {
+                addMessage("জি বস্, আমি আপনার মেসেজটি পেয়েছি। প্রসেস করছি...", 'ai-msg');
+            }, 800);
         }
 
         function addMessage(text, className) {
@@ -123,24 +100,18 @@
             div.innerText = text;
             chatBox.appendChild(div);
             chatBox.scrollTop = chatBox.scrollHeight;
-            return div;
         }
 
-        function addImage(src, className) {
+        function addMedia(src, className) {
             const chatBox = document.getElementById('chatBox');
             const img = document.createElement('img');
             img.src = src;
-            img.className = className;
+            img.className = `media-msg ${className}`;
             chatBox.appendChild(img);
             chatBox.scrollTop = chatBox.scrollHeight;
-            return img;
         }
 
-        function logout() {
-            auth.signOut().then(() => {
-                window.location.href = 'index.html';
-            });
-        }
+        function logout() { window.location.href = 'index.html'; }
     </script>
 </body>
 </html>
