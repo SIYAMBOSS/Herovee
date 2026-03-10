@@ -1,100 +1,33 @@
-/* Project: HEROVEE AI SYSTEM | Developer: Siyamboss */
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Segoe+UI&display=swap');
+/* ... আগের সাধারণ স্টাইলগুলো থাকবে ... */
 
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
-
-body { 
-    background: #050505; 
-    height: 100vh;
-    font-family: 'Segoe UI', sans-serif; 
-    color: white; 
-    overflow: hidden; 
+/* Country List */
+.country-list { 
+    display: none; position: absolute; top: 100%; left: 0; width: 100%; 
+    background: #1a1a1a; border-radius: 12px; z-index: 100; max-height: 180px; 
+    overflow-y: auto; border: 1px solid #333; 
 }
+.country-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #222; font-size: 14px; }
+.country-item:hover { background: #222; color: #45f3ff; }
 
-/* মোবাইল কিবোর্ড ওপেন হলে ফন্ট সাইজ ঠিক রাখা */
-input, textarea { font-size: 16px !important; }
-
-/* --- লগইন এবং সাইনআপ পেজ --- */
-.orbit { 
-    position: absolute; width: 420px; height: 620px; 
-    background: linear-gradient(0deg, transparent, #45f3ff, #ff3c7b); 
-    border-radius: 50%; z-index: 1; animation: rotateOrbit 4s linear infinite; 
-    left: 50%; top: 50%; margin-left: -210px; margin-top: -310px;
+/* Image Preview Box (Loading Status) */
+.image-preview-box { 
+    display: none; padding: 10px; background: rgba(0,0,0,0.6); 
+    border-radius: 15px; margin-bottom: 8px; width: fit-content;
+    border: 1px dashed #45f3ff;
 }
-@keyframes rotateOrbit { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-.auth-card { 
-    position: relative; width: 380px; min-height: 600px; background: #111; 
-    border-radius: 40px; z-index: 10; display: flex; flex-direction: column; 
-    align-items: center; justify-content: center; padding: 40px 30px; 
-    border: 1px solid rgba(255,255,255,0.05); margin: auto; margin-top: 5vh;
+.preview-item { position: relative; width: 65px; height: 65px; }
+.preview-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+.loading-overlay { 
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+    background: rgba(0,0,0,0.4); display: flex; align-items: center; 
+    justify-content: center; color: #45f3ff; border-radius: 10px;
 }
+.close-preview { position: absolute; top: -8px; right: -8px; color: #ff3c7b; cursor: pointer; font-size: 20px; background: #000; border-radius: 50%; }
 
-.herovee-title { 
-    font-family: 'Orbitron', sans-serif; text-transform: uppercase; letter-spacing: 5px; 
-    background: linear-gradient(90deg, #45f3ff, #ff3c7b, #45f3ff); 
-    background-size: 200% auto; -webkit-background-clip: text; color: transparent; 
-    animation: gradientShift 3s linear infinite; text-shadow: 0 0 15px rgba(69, 243, 255, 0.4); 
-}
-@keyframes gradientShift { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+/* Message Layout */
+.chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; padding-bottom: 120px; }
+.media-msg { max-width: 180px; border-radius: 12px; border: 2px solid #45f3ff; align-self: flex-end; }
+.input-area { position: fixed; bottom: 0; left: 0; width: 100%; padding: 15px; background: #050505; z-index: 1000; }
 
-.input-style { 
-    width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); 
-    border-radius: 15px; padding: 14px 20px; margin-bottom: 12px; color: white; outline: none; transition: 0.3s;
-}
-.input-style:focus { border-color: #45f3ff; }
-
-.action-btn { 
-    width: 100%; padding: 15px; border-radius: 15px; background: linear-gradient(90deg, #45f3ff, #ff3c7b); 
-    color: white; font-weight: bold; cursor: pointer; border: none; text-transform: uppercase;
-}
-
-#google_login_btn { 
-    margin-top: 50px; /* আইকনটি আরও নিচে নামানো হয়েছে */
-    background: white; padding: 12px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
-}
-
-/* --- চ্যাট ইন্টারফেস --- */
-.chat-bg { display: flex; flex-direction: column; height: 100vh; background: #050505; }
-
-.chat-header { 
-    padding: 15px 20px; background: #0d0d0d; border-bottom: 1px solid #1a1a1a; 
-    display: flex; align-items: center; z-index: 100; position: sticky; top: 0;
-}
-
-.chat-container { 
-    flex: 1; padding: 20px; overflow-y: auto; display: flex; 
-    flex-direction: column; gap: 15px; padding-bottom: 110px; /* ইনপুট বক্সের জন্য গ্যাপ */
-    scroll-behavior: smooth;
-}
-
-.msg { max-width: 80%; padding: 12px 16px; border-radius: 20px; font-size: 14.5px; line-height: 1.5; word-wrap: break-word; }
-.ai-msg { background: #1a1a1a; color: #e0e0e0; align-self: flex-start; border-bottom-left-radius: 4px; }
-.user-msg { background: linear-gradient(135deg, #00d2ff, #3a7bd5); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
-
-/* ইমেজ সাইজ ফিক্স */
-.media-msg { 
-    max-width: 180px; 
-    max-height: 180px; 
-    object-fit: cover;
-    border-radius: 15px; 
-    border: 2px solid #45f3ff; 
-    align-self: flex-end; 
-    margin-top: 5px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
-
-.input-area { 
-    position: fixed; bottom: 0; left: 0; width: 100%; 
-    padding: 15px; background: #050505; border-top: 1px solid #111; z-index: 1000;
-}
-
-.input-wrapper { 
-    background: #121212; border-radius: 30px; display: flex; 
-    align-items: center; padding: 5px 15px; border: 1px solid #222;
-}
-
-textarea { flex: 1; background: transparent; border: none; outline: none; color: white; padding: 10px; resize: none; max-height: 100px; }
-
-.action-icon { color: #45f3ff; font-size: 22px; cursor: pointer; margin-right: 10px; }
-.send-btn { color: #45f3ff; font-size: 20px; background: transparent; border: none; cursor: pointer; }
+/* Google Button Position */
+#google_login_btn { margin-top: 45px; background: #fff; padding: 12px; border-radius: 50%; cursor: pointer; box-shadow: 0 0 15px rgba(255,255,255,0.2); }
