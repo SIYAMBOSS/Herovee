@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Herovee AI - Siyam Boss Login</title>
+    <title>Herovee AI - Login</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
@@ -11,21 +11,26 @@
 <body>
     <div class="orbit"></div>
     <div class="auth-card">
-        <h2 class="herovee-title text-4xl mb-8" style="font-size: 35px; margin-bottom: 30px;">HEROVEE</h2>
+        <h2 class="herovee-title text-4xl mb-8">HEROVEE</h2>
         
-        <div id="loginFields" class="w-full" style="width: 100%;">
+        <div id="loginFields" class="w-full">
             <input type="email" id="loginEmail" placeholder="Gmail Address" class="input-style">
             <input type="password" id="loginPass" placeholder="Password" class="input-style">
             <button onclick="handleLogin()" class="action-btn">SIGN IN</button>
-            <p style="text-align:center; font-size:12px; margin-top:20px;">New here? <span onclick="toggleForm()" style="color:#45f3ff; cursor:pointer; text-decoration:underline;">Create Account</span></p>
+            <p style="text-align:center; font-size:12px; margin-top:15px;">New? <span onclick="toggleForm()" style="color:#45f3ff; cursor:pointer;">Create Account</span></p>
         </div>
 
-        <div id="signupFields" class="w-full" style="display: none; width: 100%;">
+        <div id="signupFields" class="w-full" style="display: none;">
+            <div class="pass-container">
+                <input type="text" id="countryInput" placeholder="Select Country" class="input-style" readonly onclick="toggleCountryList()">
+                <div id="countryList" class="country-list"></div>
+            </div>
             <input type="text" id="signupName" placeholder="Full Name" class="input-style">
             <input type="email" id="signupEmail" placeholder="Gmail Address" class="input-style">
-            <input type="password" id="signupPass" placeholder="Password" class="input-style">
+            <input type="password" id="signupPass" placeholder="Create Password" class="input-style">
+            <input type="password" id="confirmPass" placeholder="Confirm Password" class="input-style">
             <button onclick="handleSignup()" class="action-btn">CREATE ACCOUNT</button>
-            <p style="text-align:center; font-size:12px; margin-top:20px;">Back to <span onclick="toggleForm()" style="color:#45f3ff; cursor:pointer; text-decoration:underline;">Sign In</span></p>
+            <p style="text-align:center; font-size:12px; margin-top:15px;">Back to <span onclick="toggleForm()" style="color:#45f3ff; cursor:pointer;">Sign In</span></p>
         </div>
 
         <div id="google_login_btn" onclick="handleGoogleLogin()">
@@ -43,33 +48,51 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
+        // Country List Logic
+        const countries = ["Bangladesh", "India", "USA", "UK", "Canada", "Germany", "UAE"];
+        function loadCountries() {
+            const list = document.getElementById('countryList');
+            countries.forEach(c => {
+                const div = document.createElement('div');
+                div.className = 'country-item';
+                div.innerText = c;
+                div.onclick = () => {
+                    document.getElementById('countryInput').value = c;
+                    list.style.display = 'none';
+                };
+                list.appendChild(div);
+            });
+        }
+        function toggleCountryList() {
+            const list = document.getElementById('countryList');
+            list.style.display = list.style.display === 'block' ? 'none' : 'block';
+        }
+        loadCountries();
+
         function toggleForm() {
-            const l = document.getElementById('loginFields');
-            const s = document.getElementById('signupFields');
-            if(l.style.display === 'none') {
-                l.style.display = 'block'; s.style.display = 'none';
-            } else {
-                l.style.display = 'none'; s.style.display = 'block';
-            }
+            const l = document.getElementById('loginFields'), s = document.getElementById('signupFields');
+            l.style.display = l.style.display === 'none' ? 'block' : 'none';
+            s.style.display = s.style.display === 'none' ? 'block' : 'none';
+        }
+
+        async function handleSignup() {
+            const pass = document.getElementById('signupPass').value;
+            const confirm = document.getElementById('confirmPass').value;
+            if(pass !== confirm) return alert("Passwords do not match!");
+            // Firebase signup logic here...
         }
 
         async function handleGoogleLogin() {
             const provider = new firebase.auth.GoogleAuthProvider();
             provider.setCustomParameters({ prompt: 'select_account' });
-            try {
-                const result = await auth.signInWithPopup(provider);
-                if(result.user) window.location.href = 'chat.html';
-            } catch (err) { alert("Google Login Error: " + err.message); }
+            try { await auth.signInWithPopup(provider); window.location.href = 'chat.html'; }
+            catch (err) { alert("Google Login Failed!"); }
         }
 
         async function handleLogin() {
-            const e = document.getElementById('loginEmail').value;
-            const p = document.getElementById('loginPass').value;
-            if(!e || !p) return alert("Please fill all fields");
-            try {
-                await auth.signInWithEmailAndPassword(e, p);
-                window.location.href = 'chat.html';
-            } catch (err) { alert("Invalid Gmail or Password!"); }
+            const e = document.getElementById('loginEmail').value, p = document.getElementById('loginPass').value;
+            try { await auth.signInWithEmailAndPassword(e, p); window.location.href = 'chat.html'; }
+            catch (err) { alert("Login Failed!"); }
         }
     </script>
 </body>
