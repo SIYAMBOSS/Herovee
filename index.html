@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Herovee AI System</title>
+    <title>Herovee AI System - Siyamboss</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&display=swap" rel="stylesheet">
     
@@ -24,6 +24,7 @@
             overflow: hidden;
         }
         
+        /* Herovee Stylish Title */
         .herovee-title { 
             font-family: 'Orbitron', sans-serif; 
             text-transform: uppercase; 
@@ -37,20 +38,33 @@
         }
         @keyframes gradientShift { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
         
-        /* Mobile Only Card */
+        /* Orbit Animation */
+        .orbit { 
+            position: absolute; 
+            width: 410px; 
+            height: 620px; 
+            background: linear-gradient(0deg, transparent, #45f3ff, #ff3c7b); 
+            border-radius: 50%; 
+            z-index: 1; 
+            animation: rotate 4s linear infinite; 
+        }
+        @keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Auth Card */
         .auth-card { 
             position: relative; 
-            width: 90%; 
-            max-width: 360px; 
-            background: rgba(17, 17, 17, 0.9); 
+            width: 380px; 
+            min-height: 520px; 
+            background: #111; 
             border-radius: 40px; 
             z-index: 10; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
-            padding: 40px 20px; 
+            justify-content: center; 
+            padding: 30px 25px; 
             border: 1px solid rgba(255,255,255,0.05); 
-            backdrop-filter: blur(10px);
+            box-shadow: 0 0 50px rgba(0,0,0,1);
         }
 
         .input-style { 
@@ -62,8 +76,10 @@
             margin-bottom: 15px; 
             color: white; 
             outline: none; 
-            font-size: 15px; 
+            font-size: 14px; 
+            transition: 0.3s;
         }
+        .input-style:focus { border-color: #45f3ff; box-shadow: 0 0 10px rgba(69, 243, 255, 0.2); }
 
         .action-btn { 
             width: 100%; 
@@ -73,41 +89,45 @@
             color: white; 
             font-weight: bold; 
             cursor: pointer; 
-            letter-spacing: 1px;
-            box-shadow: 0 5px 15px rgba(69, 243, 255, 0.2);
-        }
-
-        /* Google Logo Button */
-        .google-icon-btn {
-            margin-top: 25px;
-            cursor: pointer;
             transition: 0.3s;
+            letter-spacing: 1px;
+        }
+        .action-btn:active { transform: scale(0.95); }
+
+        /* Google Icon Button */
+        .google-icon-btn {
+            width: 50px;
+            height: 50px;
             background: white;
-            padding: 12px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+            margin-top: 20px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255,255,255,0.1);
+            transition: 0.3s;
         }
-        .google-icon-btn:active { transform: scale(0.9); }
+        .google-icon-btn:hover { transform: scale(1.1); }
 
-        /* Custom English Notification (Phone Top) */
+        /* Notification Styling (English & Phone Optimized) */
         #customAlert { 
             position: fixed; 
             top: -100px; 
             left: 50%; 
             transform: translateX(-50%); 
             width: 85%; 
-            background: rgba(17, 17, 17, 0.95); 
+            background: rgba(20, 20, 20, 0.95); 
             border-left: 5px solid #45f3ff; 
             color: white; 
             padding: 15px; 
             border-radius: 12px; 
             text-align: center; 
             z-index: 9999; 
-            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            font-size: 14px; 
+            transition: 0.5s; 
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+            pointer-events: none;
         }
         #customAlert.show { top: 20px; }
         #customAlert.error { border-left-color: #ff3c7b; }
@@ -118,7 +138,8 @@
 </head>
 <body>
 
-    <div id="customAlert">Notification Message</div>
+    <div id="customAlert">Notification</div>
+    <div class="orbit"></div>
     
     <div class="auth-card shadow-2xl">
         <h2 class="herovee-title text-4xl mb-10">HEROVEE</h2>
@@ -127,7 +148,7 @@
             <input type="email" id="loginEmail" placeholder="Gmail Address" class="input-style">
             <input type="password" id="loginPass" placeholder="Password" class="input-style">
             <button onclick="handleLogin()" class="action-btn">SIGN IN</button>
-            <p class="text-xs text-gray-500 mt-6 text-center">Don't have an account? <span onclick="toggleForm()" class="text-cyan-400 font-bold underline">Create Now</span></p>
+            <p class="text-[12px] text-gray-500 mt-6 text-center">Don't have account? <span onclick="toggleForm()" class="text-cyan-400 cursor-pointer font-bold underline">Create Now</span></p>
         </div>
 
         <div id="signupFields">
@@ -135,7 +156,7 @@
             <input type="email" id="signupEmail" placeholder="Gmail Address" class="input-style">
             <input type="password" id="signupPass" placeholder="Password" class="input-style">
             <button onclick="handleSignup()" class="action-btn">CREATE ACCOUNT</button>
-            <p class="text-xs text-gray-500 mt-6 text-center">Already have account? <span onclick="toggleForm()" class="text-cyan-400 font-bold underline">Login</span></p>
+            <p class="text-[12px] text-gray-500 mt-6 text-center">Back to <span onclick="toggleForm()" class="text-cyan-400 cursor-pointer font-bold underline">Sign In</span></p>
         </div>
 
         <div onclick="handleGoogleLogin()" class="google-icon-btn">
@@ -144,7 +165,6 @@
     </div>
 
     <script>
-        // Firebase Configuration (Using your IDs)
         const firebaseConfig = {
             apiKey: "AIzaSyC2mVQ231K2kEqhxP01YJyiuZzsFK1RIcE",
             authDomain: "herovee-ai.firebaseapp.com",
@@ -162,37 +182,26 @@
             const alertBox = document.getElementById('customAlert');
             alertBox.innerText = text;
             alertBox.className = type === 'error' ? 'show error' : 'show';
-            setTimeout(() => alertBox.classList.remove('show'), 3000);
+            setTimeout(() => alertBox.classList.remove('show'), 3500);
         }
 
-        // --- Google Login Fix ---
         async function handleGoogleLogin() {
             const provider = new firebase.auth.GoogleAuthProvider();
-            // Force account selection (সব জিমেইল শো করানোর জন্য)
             provider.setCustomParameters({ prompt: 'select_account' });
-
             try {
                 const result = await auth.signInWithPopup(provider);
-                const user = result.user;
-                
-                await db.collection("users").doc(user.uid).set({
-                    fullName: user.displayName,
-                    email: user.email,
-                    photo: user.photoURL,
+                await db.collection("users").doc(result.user.uid).set({
+                    fullName: result.user.displayName,
+                    email: result.user.email,
                     lastLogin: firebase.firestore.FieldValue.serverTimestamp()
                 }, { merge: true });
-
-                showMessage("Login Successful! Welcome " + user.displayName);
-                // আপনার মেইন পেইজের লিঙ্ক এখানে দিতে পারেন
-            } catch (err) {
-                showMessage("Authentication Failed!", "error");
-            }
+                showMessage("Welcome " + result.user.displayName + "!");
+            } catch (err) { showMessage("Login Failed!", "error"); }
         }
 
         async function handleLogin() {
             const email = document.getElementById('loginEmail').value;
             const pass = document.getElementById('loginPass').value;
-            if(!email || !pass) return showMessage("Please fill all fields", "error");
             try {
                 await auth.signInWithEmailAndPassword(email, pass);
                 showMessage("Login Successful!");
@@ -203,7 +212,6 @@
             const name = document.getElementById('signupName').value;
             const email = document.getElementById('signupEmail').value;
             const pass = document.getElementById('signupPass').value;
-            if(!name || !email || !pass) return showMessage("Fields cannot be empty", "error");
             try {
                 const cred = await auth.createUserWithEmailAndPassword(email, pass);
                 await db.collection("users").doc(cred.user.uid).set({
@@ -211,7 +219,7 @@
                     email: email,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                showMessage("Account Created Successfully!");
+                showMessage("Account Created!");
                 toggleForm();
             } catch (err) { showMessage(err.message, "error"); }
         }
