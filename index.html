@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Herovee AI System - Siyamboss</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,12 +37,14 @@
                     <span>▼</span>
                 </div>
                 <div id="countryList" class="country-list">
+                    <input type="text" id="countrySearch" onkeyup="filterCountries()" placeholder="Search country..." class="country-search-input">
                     <div id="countryOptions"></div>
                 </div>
             </div>
 
             <input type="email" id="signupEmail" placeholder="Gmail Address" class="input-style">
             <input type="password" id="signupPass" placeholder="Password" class="input-style">
+            <input type="password" id="signupConfirm" placeholder="Confirm Password" class="input-style">
             <button onclick="handleSignup()" class="action-btn">CREATE ACCOUNT</button>
             <p class="text-[12px] text-gray-500 mt-4 text-center">Back to <span onclick="toggleForm()" class="text-cyan-400 cursor-pointer font-bold underline">Sign In</span></p>
         </div>
@@ -67,7 +69,38 @@
         const db = firebase.firestore();
 
         let selectedCountry = "";
-        const countries = ["Bangladesh", "India", "USA", "UK", "Canada", "Australia", "UAE"];
+        
+        // World Countries API fetch or Static List
+        async function loadAllCountries() {
+            try {
+                const res = await fetch('https://restcountries.com/v3.1/all?fields=name');
+                const data = await res.json();
+                const countryNames = data.map(c => c.name.common).sort();
+                const options = document.getElementById('countryOptions');
+                options.innerHTML = countryNames.map(name => 
+                    `<div class="country-item" onclick="setCountry('${name}')">${name}</div>`
+                ).join('');
+            } catch (e) {
+                const backup = ["Bangladesh", "India", "USA", "UK", "Canada"];
+                document.getElementById('countryOptions').innerHTML = backup.map(name => 
+                    `<div class="country-item" onclick="setCountry('${name}')">${name}</div>`
+                ).join('');
+            }
+        }
+
+        function filterCountries() {
+            const val = document.getElementById('countrySearch').value.toLowerCase();
+            const items = document.getElementsByClassName('country-item');
+            for (let item of items) {
+                item.style.display = item.innerText.toLowerCase().includes(val) ? "block" : "none";
+            }
+        }
+
+        function setCountry(name) {
+            selectedCountry = name;
+            document.getElementById('countryText').innerText = name;
+            toggleCountryList();
+        }
 
         function showMessage(text, type = 'success') {
             const alertBox = document.getElementById('customAlert');
@@ -80,8 +113,8 @@
             const provider = new firebase.auth.GoogleAuthProvider();
             provider.setCustomParameters({ prompt: 'select_account' });
             try {
-                const result = await auth.signInWithPopup(provider);
-                showMessage("Login Successful! Welcome " + result.user.displayName);
+                await auth.signInWithPopup(provider);
+                showMessage("Login Successful!");
             } catch (err) { showMessage("Google Login Failed!", "error"); }
         }
 
@@ -98,7 +131,11 @@
             const name = document.getElementById('signupName').value;
             const email = document.getElementById('signupEmail').value;
             const pass = document.getElementById('signupPass').value;
-            if(!name || !selectedCountry) return showMessage("Please fill all details", "error");
+            const confirm = document.getElementById('signupConfirm').value;
+
+            if(!name || !selectedCountry) return showMessage("Fill all details", "error");
+            if(pass !== confirm) return showMessage("Passwords do not match", "error");
+
             try {
                 const cred = await auth.createUserWithEmailAndPassword(email, pass);
                 await db.collection("users").doc(cred.user.uid).set({
@@ -120,11 +157,7 @@
             list.style.display = list.style.display === 'block' ? 'none' : 'block';
         }
 
-        window.onload = () => {
-            document.getElementById('countryOptions').innerHTML = countries.map(c => 
-                `<div class="country-item" onclick="selectedCountry='${c}'; document.getElementById('countryText').innerText='${c}'; toggleCountryList();">${c}</div>`
-            ).join('');
-        };
+        window.onload = loadAllCountries;
     </script>
 </body>
 </html>
