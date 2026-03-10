@@ -1,0 +1,129 @@
+body { 
+    background: #050505; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    min-height: 100vh; 
+    font-family: 'Segoe UI', sans-serif; 
+    color: white; 
+    margin: 0; 
+    overflow: hidden; 
+}
+
+/* Herovee Title Animation */
+.herovee-title { 
+    font-family: 'Orbitron', sans-serif; 
+    text-transform: uppercase; 
+    letter-spacing: 5px; 
+    background: linear-gradient(90deg, #45f3ff, #ff3c7b, #45f3ff); 
+    background-size: 200% auto; 
+    -webkit-background-clip: text; 
+    color: transparent; 
+    animation: gradientShift 3s linear infinite; 
+    text-shadow: 0 0 15px rgba(69, 243, 255, 0.5); 
+}
+@keyframes gradientShift { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+
+/* Orbit Animation */
+.orbit { 
+    position: absolute; 
+    width: 410px; 
+    height: 620px; 
+    background: linear-gradient(0deg, transparent, #45f3ff, #ff3c7b); 
+    border-radius: 50%; 
+    z-index: 1; 
+    animation: rotate 4s linear infinite; 
+}
+@keyframes rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* Main Card */
+.auth-card { 
+    position: relative; 
+    width: 380px; 
+    min-height: 550px; 
+    background: #111; 
+    border-radius: 40px; 
+    z-index: 10; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    padding: 30px 25px; 
+    border: 1px solid rgba(255,255,255,0.05); 
+}
+
+/* Input Fields */
+.input-style { 
+    width: 100%; 
+    background: rgba(255,255,255,0.05); 
+    border: 1px solid rgba(255,255,255,0.1); 
+    border-radius: 15px; 
+    padding: 14px 20px; 
+    margin-bottom: 12px; 
+    color: white; 
+    outline: none; 
+    font-size: 14px; 
+}
+
+/* Buttons */
+.action-btn { 
+    width: 100%; 
+    padding: 15px; 
+    border-radius: 15px; 
+    background: linear-gradient(90deg, #45f3ff, #ff3c7b); 
+    color: white; 
+    font-weight: bold; 
+    cursor: pointer; 
+}
+
+/* Google ImageButton Android Style */
+#google_login_btn {
+    width: 48px;
+    height: 48px;
+    background: #1a1a1a;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+#google_login_btn:active { background: rgba(255,255,255,0.1); transform: scale(0.95); }
+
+/* Country Dropdown */
+.country-list { 
+    display: none; 
+    position: absolute; 
+    top: 100%; 
+    left: 0; 
+    width: 100%; 
+    background: #1a1a1a; 
+    border-radius: 10px; 
+    z-index: 50; 
+    max-height: 150px; 
+    overflow-y: auto; 
+}
+.country-item { padding: 10px; cursor: pointer; font-size: 13px; border-bottom: 1px solid #222; }
+.country-item:hover { background: #45f3ff22; }
+
+/* Notification Box */
+#customAlert { 
+    position: fixed; 
+    top: -100px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    width: 85%; 
+    background: #111; 
+    border-left: 5px solid #45f3ff; 
+    color: white; 
+    padding: 15px; 
+    border-radius: 10px; 
+    text-align: center; 
+    z-index: 9999; 
+    transition: 0.5s; 
+}
+#customAlert.show { top: 20px; }
+#customAlert.error { border-left-color: #ff3c7b; }
+
+#signupFields { display: none; width: 100%; }
