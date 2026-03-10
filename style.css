@@ -1,9 +1,10 @@
-/* Project: HEROVEE AI SYSTEM | Dev: Siyamboss */
+/* Project: HEROVEE AI  | Dev: Siyamboss */
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Segoe+UI:wght@400;600&display=swap');
 
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body { background: #050505; height: 100vh; font-family: 'Segoe UI', sans-serif; color: white; overflow: hidden; display: flex; align-items: center; justify-content: center; }
 
+/* Orbit Animation */
 .orbit { 
     position: absolute; width: 550px; height: 550px; 
     background: linear-gradient(0deg, transparent, #45f3ff, #ff3c7b); 
@@ -12,6 +13,7 @@ body { background: #050505; height: 100vh; font-family: 'Segoe UI', sans-serif; 
 }
 @keyframes rotateOrbit { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+/* Auth Card */
 .auth-card { 
     position: relative; width: 380px; min-height: 580px; background: rgba(17, 17, 17, 0.98); 
     border-radius: 45px; z-index: 10; display: flex; flex-direction: column; 
@@ -34,12 +36,14 @@ body { background: #050505; height: 100vh; font-family: 'Segoe UI', sans-serif; 
 }
 .eye-icon { position: absolute; right: 18px; top: 16px; color: #666; cursor: pointer; font-size: 18px; }
 
-/* Country Dropdown Styling */
+/* Country Dropdown & Search */
 .country-list { 
     display: none; position: absolute; width: 100%; background: #1a1a1a; 
-    border-radius: 14px; z-index: 100; max-height: 200px; overflow-y: auto; 
+    border-radius: 14px; z-index: 100; max-height: 220px; overflow-y: auto; 
     border: 1px solid #333; top: 58px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);
 }
+.search-box { position: sticky; top: 0; background: #1a1a1a; padding: 10px; border-bottom: 1px solid #333; }
+.search-box input { width: 100%; background: #000; border: 1px solid #45f3ff; color: white; padding: 8px; border-radius: 8px; outline: none; font-size: 13px; }
 .country-item { padding: 12px 20px; cursor: pointer; border-bottom: 1px solid #222; font-size: 14px; }
 .country-item:hover { background: #222; color: #45f3ff; }
 
@@ -50,18 +54,22 @@ body { background: #050505; height: 100vh; font-family: 'Segoe UI', sans-serif; 
 
 #google_login_btn { margin-top: 40px; background: white; padding: 12px; border-radius: 50%; cursor: pointer; display: flex; transition: 0.3s; }
 
-/* Chat Specific Styles */
+/* Chat Specific */
 .chat-bg { flex-direction: column; justify-content: flex-start; }
 .chat-header { width: 100%; padding: 15px 22px; background: #0d0d0d; border-bottom: 1px solid #1a1a1a; display: flex; align-items: center; justify-content: space-between; position: fixed; top: 0; z-index: 1000; }
 .chat-container { width: 100%; max-width: 600px; padding: 85px 20px 140px; overflow-y: auto; display: flex; flex-direction: column; gap: 18px; height: 100vh; scroll-behavior: smooth; }
 .msg { max-width: 82%; padding: 14px 18px; border-radius: 22px; font-size: 15px; line-height: 1.6; }
 .ai-msg { background: #1a1a1a; align-self: flex-start; border-bottom-left-radius: 5px; color: #e5e5e5; }
 .user-msg { background: linear-gradient(135deg, #00d2ff, #3a7bd5); align-self: flex-end; border-bottom-right-radius: 5px; color: white; }
-.media-msg { max-width: 190px; border-radius: 18px; border: 2.5px solid #45f3ff; align-self: flex-end; }
+
+/* Reduced Photo Size */
+.media-msg { max-width: 130px; border-radius: 15px; border: 2.5px solid #45f3ff; align-self: flex-end; margin-top: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+
 .image-preview-box { display: none; padding: 12px; background: rgba(0,0,0,0.85); border-radius: 18px; margin: 12px; width: fit-content; border: 1.5px dashed #45f3ff; }
 .preview-item { position: relative; width: 65px; height: 65px; }
 .preview-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
 .close-preview { position: absolute; top: -10px; right: -10px; color: #ff3c7b; background: #000; border-radius: 50%; cursor: pointer; font-size: 22px; }
+
 .input-area { position: fixed; bottom: 0; width: 100%; max-width: 600px; padding: 18px; background: #050505; }
 .input-wrapper { background: #121212; border-radius: 32px; display: flex; align-items: center; padding: 6px 18px; border: 1.5px solid #222; }
 textarea { flex: 1; background: transparent; border: none; outline: none; color: white; padding: 12px; resize: none; max-height: 120px; font-size: 16px; }
