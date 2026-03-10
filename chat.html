@@ -2,116 +2,83 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Herovee AI Chat - Siyamboss</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Herovee AI - Chat</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 </head>
 <body class="chat-bg">
-
     <header class="chat-header">
         <div class="flex items-center w-full justify-between">
             <div class="flex items-center">
                 <div class="ai-avatar-glow">H</div>
                 <div class="ml-3">
-                    <h1 class="text-cyan-400 font-bold text-lg tracking-widest">HEROVEE AI SYSTEM</h1>
-                    <p class="text-[9px] text-gray-500 uppercase tracking-tighter">Active • Siyam Boss Edition</p>
+                    <h1 class="text-cyan-400 font-bold">HEROVEE AI SYSTEM</h1>
                 </div>
             </div>
-            <button onclick="logout()" class="text-gray-500 hover:text-red-500 transition-all">
-                <i class="fa-solid fa-power-off text-xl"></i>
-            </button>
+            <i class="fa-solid fa-power-off text-gray-500" onclick="window.location.href='index.html'"></i>
         </div>
     </header>
 
     <div id="chatBox" class="chat-container">
-        <div class="msg ai-msg">
-            আসসালামু আলাইকুম সিয়াম বস্! HEROVEE AI এখন প্রস্তুত। আপনি যেভাবে ছবি বা টেক্সট দিতে চান, আমি সেভাবেই রেসপন্স করব।
-        </div>
+        <div class="msg ai-msg">আসসালামু আলাইকুম সিয়াম বস্! আমি আপনার HEROVEE AI।</div>
     </div>
 
     <div class="input-area">
         <div class="input-wrapper">
-            <label for="imageUpload" class="action-icon">
-                <i class="fa-solid fa-camera-retro"></i>
-            </label>
+            <label for="imageUpload" class="action-icon"><i class="fa-solid fa-camera"></i></label>
             <input type="file" id="imageUpload" accept="image/*" class="hidden" onchange="previewImage(this)">
-            
             <textarea id="userInput" rows="1" placeholder="Type message..." oninput="autoGrow(this)"></textarea>
-            
-            <button id="sendBtn" onclick="sendMessage()" class="send-btn">
-                <i class="fa-solid fa-paper-plane"></i>
-            </button>
+            <button onclick="sendMessage()" class="send-btn"><i class="fa-solid fa-paper-plane"></i></button>
         </div>
     </div>
 
     <script>
-        // Firebase Config (Keep as is)
-        const firebaseConfig = {
-            apiKey: "AIzaSyC2mVQ231K2kEqhxP01YJyiuZzsFK1RIcE",
-            authDomain: "herovee-ai.firebaseapp.com",
-            projectId: "herovee-ai",
-            storageBucket: "herovee-ai.firebasestorage.app",
-            messagingSenderId: "89517868095",
-            appId: "1:89517868095:web:c0500e9a8dbb426cada48a"
-        };
-        firebase.initializeApp(firebaseConfig);
+        let selectedImageData = null;
 
-        function autoGrow(element) {
-            element.style.height = "5px";
-            element.style.height = (element.scrollHeight) + "px";
-        }
+        function autoGrow(e) { e.style.height = "5px"; e.style.height = (e.scrollHeight) + "px"; }
 
         function previewImage(input) {
             const file = input.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    addMedia(e.target.result, 'user-img');
-                }
+                reader.onload = (e) => { 
+                    selectedImageData = e.target.result;
+                    document.querySelector('.input-wrapper').style.borderColor = "#45f3ff";
+                };
                 reader.readAsDataURL(file);
             }
         }
 
-        async function sendMessage() {
+        function sendMessage() {
             const input = document.getElementById('userInput');
-            const message = input.value.trim();
-            if (!message) return;
+            const msg = input.value.trim();
+            if (!msg && !selectedImageData) return;
 
-            addMessage(message, 'user-msg');
-            input.value = '';
-            input.style.height = "auto";
+            if (selectedImageData) addMedia(selectedImageData);
+            if (msg) addMessage(msg, 'user-msg');
 
-            // AI Logic placeholder
-            setTimeout(() => {
-                addMessage("জি বস্, আমি আপনার মেসেজটি পেয়েছি। প্রসেস করছি...", 'ai-msg');
-            }, 800);
+            input.value = ''; input.style.height = "auto";
+            selectedImageData = null;
+            document.querySelector('.input-wrapper').style.borderColor = "#222";
+
+            setTimeout(() => addMessage("জি সিয়াম বস্, আমি দেখছি...", 'ai-msg'), 1000);
         }
 
-        function addMessage(text, className) {
-            const chatBox = document.getElementById('chatBox');
-            const div = document.createElement('div');
-            div.className = `msg ${className}`;
-            div.innerText = text;
-            chatBox.appendChild(div);
-            chatBox.scrollTop = chatBox.scrollHeight;
+        function addMessage(t, c) {
+            const b = document.getElementById('chatBox');
+            const d = document.createElement('div');
+            d.className = `msg ${c}`; d.innerText = t;
+            b.appendChild(d); b.scrollTop = b.scrollHeight;
         }
 
-        function addMedia(src, className) {
-            const chatBox = document.getElementById('chatBox');
-            const img = document.createElement('img');
-            img.src = src;
-            img.className = `media-msg ${className}`;
-            chatBox.appendChild(img);
-            chatBox.scrollTop = chatBox.scrollHeight;
+        function addMedia(s) {
+            const b = document.getElementById('chatBox');
+            const i = document.createElement('img');
+            i.src = s; i.className = "media-msg";
+            b.appendChild(i); b.scrollTop = b.scrollHeight;
         }
-
-        function logout() { window.location.href = 'index.html'; }
     </script>
 </body>
 </html>
