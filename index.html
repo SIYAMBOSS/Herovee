@@ -3,241 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Herovee AI System - Siyamboss</title>
-    
+    <title>Herovee AI - Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
-
     <div id="customAlert">Notification</div>
-    
     <div class="orbit"></div>
     
-    <div class="auth-card shadow-2xl">
+    <div class="auth-card">
         <h2 class="herovee-title text-4xl mb-8">HEROVEE</h2>
         
-        <div id="loginFields">
+        <div id="loginFields" class="w-full">
             <input type="email" id="loginEmail" placeholder="Gmail Address" class="input-style">
-            
-            <div class="pass-container">
-                <input type="password" id="loginPass" placeholder="Password" class="input-style pr-12">
-                <i class="fa-solid fa-eye-slash toggle-pass" onclick="togglePassword('loginPass', this)"></i>
-            </div>
-
+            <input type="password" id="loginPass" placeholder="Password" class="input-style">
             <button onclick="handleLogin()" class="action-btn">SIGN IN</button>
-            <p class="text-[12px] text-gray-500 mt-6 text-center">New here? <span onclick="toggleForm()" class="text-cyan-400 cursor-pointer font-bold underline">Create Account</span></p>
+            <p class="text-[12px] mt-6 text-center">New? <span onclick="toggleForm()" class="text-cyan-400 cursor-pointer underline">Create Account</span></p>
         </div>
 
-        <div id="signupFields">
+        <div id="signupFields" class="w-full" style="display: none;">
             <input type="text" id="signupName" placeholder="Full Name" class="input-style">
-            
-            <div class="relative w-full mb-3">
-                <div onclick="toggleCountryList()" id="countryBox" class="input-style flex justify-between items-center cursor-pointer mb-0">
-                    <span id="countryText">Select Country</span>
-                    <i class="fa-solid fa-chevron-down text-[12px] text-cyan-400"></i>
-                </div>
-                <div id="countryList" class="country-list">
-                    <input type="text" id="countrySearch" onkeyup="filterCountries()" placeholder="Search country..." class="country-search-input">
-                    <div id="countryOptions"></div>
-                </div>
-            </div>
-
             <input type="email" id="signupEmail" placeholder="Gmail Address" class="input-style">
-            
-            <div class="pass-container">
-                <input type="password" id="signupPass" placeholder="Password" class="input-style pr-12">
-                <i class="fa-solid fa-eye-slash toggle-pass" onclick="togglePassword('signupPass', this)"></i>
-            </div>
-
-            <div class="pass-container">
-                <input type="password" id="signupConfirm" placeholder="Confirm Password" class="input-style pr-12">
-                <i class="fa-solid fa-eye-slash toggle-pass" onclick="togglePassword('signupConfirm', this)"></i>
-            </div>
-
+            <input type="password" id="signupPass" placeholder="Password" class="input-style">
             <button onclick="handleSignup()" class="action-btn">CREATE ACCOUNT</button>
-            <p class="text-[12px] text-gray-500 mt-4 text-center">Back to <span onclick="toggleForm()" class="text-cyan-400 cursor-pointer font-bold underline">Sign In</span></p>
+            <p class="text-[12px] mt-4 text-center">Back to <span onclick="toggleForm()" class="text-cyan-400 cursor-pointer underline">Sign In</span></p>
         </div>
 
         <div id="google_login_btn" onclick="handleGoogleLogin()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48">
-                <path fill="#fbc02d" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12s5.373-12,12-12 c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20 C44,22.659,43.862,21.35,43.611,20.083z"/>
-                <path fill="#e53935" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657 C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
-                <path fill="#4caf50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36 c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
-                <path fill="#1565c0" d="M43.611,20.083L43.595,20L42,20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571 c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
-            </svg>
+            <img src="https://img.icons8.com/color/48/000000/google-logo.png" width="30">
         </div>
     </div>
 
     <script>
-        // আপনার ফায়ারবেস কনফিগারেশন
         const firebaseConfig = {
             apiKey: "AIzaSyC2mVQ231K2kEqhxP01YJyiuZzsFK1RIcE",
             authDomain: "herovee-ai.firebaseapp.com",
             projectId: "herovee-ai",
-            storageBucket: "herovee-ai.firebasestorage.app",
-            messagingSenderId: "89517868095",
             appId: "1:89517868095:web:c0500e9a8dbb426cada48a"
         };
-        
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
-        const db = firebase.firestore();
 
-        let selectedCountry = "";
-
-        // পাসওয়ার্ড দেখানো বা লুকানোর ফাংশন
-        function togglePassword(id, el) {
-            const input = document.getElementById(id);
-            if (input.type === "password") {
-                input.type = "text";
-                el.classList.replace("fa-eye-slash", "fa-eye");
-            } else {
-                input.type = "password";
-                el.classList.replace("fa-eye", "fa-eye-slash");
-            }
+        function toggleForm() {
+            const l = document.getElementById('loginFields');
+            const s = document.getElementById('signupFields');
+            l.style.display = l.style.display === 'none' ? 'block' : 'none';
+            s.style.display = s.style.display === 'none' ? 'block' : 'none';
         }
 
-        // বিশ্বের সব দেশের নাম এপিআই থেকে লোড করা
-        async function loadAllCountries() {
-            try {
-                const res = await fetch('https://restcountries.com/v3.1/all?fields=name');
-                const data = await res.json();
-                const countryNames = data.map(c => c.name.common).sort();
-                const options = document.getElementById('countryOptions');
-                options.innerHTML = countryNames.map(name => 
-                    `<div class="country-item" onclick="setCountry('${name}')">${name}</div>`
-                ).join('');
-            } catch (e) {
-                document.getElementById('countryOptions').innerHTML = `<div class="country-item" onclick="setCountry('Bangladesh')">Bangladesh</div>`;
-            }
-        }
-
-        function setCountry(name) {
-            selectedCountry = name;
-            document.getElementById('countryText').innerText = name;
-            toggleCountryList();
-        }
-
-        function filterCountries() {
-            const val = document.getElementById('countrySearch').value.toLowerCase();
-            const items = document.getElementsByClassName('country-item');
-            for (let item of items) {
-                item.style.display = item.innerText.toLowerCase().includes(val) ? "block" : "none";
-            }
-        }
-
-        function toggleCountryList() {
-            const list = document.getElementById('countryList');
-            list.style.display = (list.style.display === 'block') ? 'none' : 'block';
-        }
-
-        function showMessage(text, type = 'success') {
-            const alertBox = document.getElementById('customAlert');
-            alertBox.innerText = text;
-            alertBox.className = type === 'error' ? 'show error' : 'show';
-            setTimeout(() => alertBox.classList.remove('show'), 3500);
-        }
-
-        // --- Google Login Handler (সাদা পেজ সমস্যা সমাধানের কোড) ---
         async function handleGoogleLogin() {
             const provider = new firebase.auth.GoogleAuthProvider();
             provider.setCustomParameters({ prompt: 'select_account' });
-
             try {
-                // পপ-আপ মোড ব্যবহার করা হচ্ছে যাতে সাদা রিডাইরেক্ট পেজ না আসে
                 const result = await auth.signInWithPopup(provider);
-                if (result.user) {
-                    showMessage("Login Successful! Welcome " + result.user.displayName);
-                }
-            } catch (err) {
-                console.error(err);
-                if (err.code === 'auth/popup-blocked') {
-                    showMessage("Please allow pop-ups for this site", "error");
-                } else {
-                    showMessage("Google Login Failed!", "error");
-                }
-            }
+                if(result.user) window.location.href = 'chat.html';
+            } catch (err) { alert("Google Login Failed!"); }
         }
 
         async function handleLogin() {
-            const email = document.getElementById('loginEmail').value;
-            const pass = document.getElementById('loginPass').value;
+            const e = document.getElementById('loginEmail').value;
+            const p = document.getElementById('loginPass').value;
             try {
-                await auth.signInWithEmailAndPassword(email, pass);
-                showMessage("Login Successful!");
-            } catch (err) { showMessage("Invalid Credentials!", "error"); }
-        }
-
-        async function handleSignup() {
-            const name = document.getElementById('signupName').value;
-            const email = document.getElementById('signupEmail').value;
-            const pass = document.getElementById('signupPass').value;
-            const confirm = document.getElementById('signupConfirm').value;
-            if(!name || !selectedCountry) return showMessage("Fill all details", "error");
-            if(pass !== confirm) return showMessage("Passwords do not match", "error");
-            try {
-                const cred = await auth.createUserWithEmailAndPassword(email, pass);
-                await db.collection("users").doc(cred.user.uid).set({
-                    fullName: name, country: selectedCountry, email: email, createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                showMessage("Account Created!");
-                toggleForm();
-            } catch (err) { showMessage(err.message, "error"); }
-        }
-
-        function toggleForm() {
-            const isL = document.getElementById('loginFields').style.display !== 'none';
-            document.getElementById('loginFields').style.display = isL ? 'none' : 'block';
-            document.getElementById('signupFields').style.display = isL ? 'block' : 'none';
-        }
-
-        window.onload = loadAllCountries;
-        // --- Google Login Handler ---
-async function handleGoogleLogin() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: 'select_account' });
-
-    try {
-        const result = await auth.signInWithPopup(provider);
-        if (result.user) {
-            showMessage("Login Successful! Welcome " + result.user.displayName);
-            
-            // Success hole chat page-e niye jabe
-            setTimeout(() => {
+                await auth.signInWithEmailAndPassword(e, p);
                 window.location.href = 'chat.html';
-            }, 1000);
+            } catch (err) { alert("Login Failed!"); }
         }
-    } catch (err) {
-        console.error(err);
-        showMessage("Google Login Failed!", "error");
-    }
-}
 
-// --- Email Login Handler ---
-async function handleLogin() {
-    const email = document.getElementById('loginEmail').value;
-    const pass = document.getElementById('loginPass').value;
-    try {
-        await auth.signInWithEmailAndPassword(email, pass);
-        showMessage("Login Successful!");
-
-        // Success hole chat page-e niye jabe
-        setTimeout(() => {
-            window.location.href = 'chat.html';
-        }, 1000);
-    } catch (err) { 
-        showMessage("Invalid Credentials!", "error"); 
-    }
-}
-
+        function showMessage(t) {
+            const a = document.getElementById('customAlert');
+            a.innerText = t; a.classList.add('show');
+            setTimeout(() => a.classList.remove('show'), 3000);
+        }
     </script>
 </body>
 </html>
