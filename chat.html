@@ -2,99 +2,91 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Herovee AI Chat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herovee AI - Chat</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="chat-bg">
+<body style="display:flex; flex-direction:column; height:100vh;">
     <header class="chat-header">
-        <div style="display:flex; align-items:center; width:100%; justify-content:space-between;">
-            <div style="display:flex; align-items:center;">
-                <div class="ai-avatar-glow">H</div>
-                <h1 style="color:#45f3ff; margin-left:10px; font-weight:bold;">HEROVEE AI SYSTEM</h1>
-            </div>
-            <i class="fa-solid fa-power-off" style="color:#555;" onclick="window.location.href='index.html'"></i>
+        <div style="display:flex; align-items:center;">
+            <div style="width:38px; height:38px; background:linear-gradient(45deg,#45f3ff,#ff3c7b); border-radius:12px; display:flex; align-items:center; justify-content:center; font-weight:bold;">H</div>
+            <h1 style="color:#45f3ff; margin-left:12px; font-weight:bold;">HEROVEE AI SYSTEM</h1>
         </div>
+        <i class="fa-solid fa-power-off" onclick="window.location.href='index.html'"></i>
     </header>
 
     <div id="chatBox" class="chat-container">
-        <div class="msg ai-msg">আসসালামু আলাইকুম সিয়াম বস্! ছবি সিলেক্ট করলে এখন প্রিভিউ দেখাবে।</div>
+        <div class="msg ai-msg">আসসালামু আলাইকুম সিয়াম বস্! আমি আপনার কথা শোনার জন্য রেডি।</div>
     </div>
 
     <div class="input-area">
-        <div id="imagePreviewContainer" class="image-preview-box"></div>
+        <div id="previewBox" class="image-preview-box"></div>
         <div class="input-wrapper">
-            <label for="imageUpload" class="action-icon"><i class="fa-solid fa-camera"></i></label>
-            <input type="file" id="imageUpload" accept="image/*" style="display:none;" onchange="handleImageSelect(this)">
-            <textarea id="userInput" rows="1" placeholder="Type message..." oninput="autoGrow(this)"></textarea>
-            <button onclick="sendMessage()" class="send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+            <label for="imgInp" style="color:#45f3ff; margin-right:10px; cursor:pointer;"><i class="fa-solid fa-camera"></i></label>
+            <input type="file" id="imgInp" style="display:none;" onchange="previewImg(this)">
+            <textarea id="userInput" rows="1" placeholder="Type message..." oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+            <button onclick="runAI()" style="background:none; border:none; color:#45f3ff; font-size:22px;"><i class="fa-solid fa-paper-plane"></i></button>
         </div>
     </div>
 
     <script>
-        let selectedImageData = null;
+        // আপনার ৫০টি API Key এখানে কমা দিয়ে বসিয়ে দিন
+        const apiKeys = [
+            "AIzaSy...Key1", "AIzaSy...Key2", "AIzaSy...Key3" 
+            // ... এভাবে ৫০টি বসান
+        ];
+        let currentKeyIndex = 0;
+        let selectedImg = null;
 
-        function autoGrow(e) { e.style.height = "5px"; e.style.height = (e.scrollHeight) + "px"; }
-
-        function handleImageSelect(input) {
+        function previewImg(input) {
             const file = input.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (e) => { 
-                    selectedImageData = e.target.result;
-                    const previewBox = document.getElementById('imagePreviewContainer');
-                    previewBox.innerHTML = `
-                        <div class="preview-item">
-                            <img src="${selectedImageData}">
-                            <div class="loading-overlay"><i class="fa-solid fa-spinner fa-spin"></i></div>
-                            <i class="fa-solid fa-circle-xmark close-preview" onclick="removeImage()"></i>
-                        </div>`;
-                    previewBox.style.display = "block";
-                    document.querySelector('.input-wrapper').style.borderColor = "#45f3ff";
+                    selectedImg = e.target.result;
+                    document.getElementById('previewBox').innerHTML = `<div class="preview-item"><img src="${selectedImg}"><i class="fa-solid fa-circle-xmark close-preview" onclick="clearPreview()"></i></div>`;
+                    document.getElementById('previewBox').style.display = 'block';
                 };
                 reader.readAsDataURL(file);
             }
         }
 
-        function removeImage() {
-            selectedImageData = null;
-            document.getElementById('imagePreviewContainer').style.display = "none";
-            document.querySelector('.input-wrapper').style.borderColor = "#222";
-        }
+        function clearPreview() { selectedImg = null; document.getElementById('previewBox').style.display = 'none'; }
 
-        function sendMessage() {
-            const input = document.getElementById('userInput');
-            const msg = input.value.trim();
-            if (!msg && !selectedImageData) return;
+        async function runAI() {
+            const box = document.getElementById('chatBox');
+            const text = document.getElementById('userInput').value.trim();
+            if(!text && !selectedImg) return;
 
-            if (selectedImageData) addMedia(selectedImageData);
-            if (msg) addMessage(msg, 'user-msg');
-
-            removeImage();
-            input.value = ''; input.style.height = "auto";
-            scrollToBottom();
+            // UI Update
+            if(selectedImg) {
+                let img = document.createElement('img'); img.src=selectedImg; img.className='media-msg';
+                box.appendChild(img);
+            }
+            if(text) {
+                let d = document.createElement('div'); d.className='msg user-msg'; d.innerText=text;
+                box.appendChild(d);
+            }
             
-            setTimeout(() => { addMessage("জি সিয়াম বস্, আমি দেখছি...", 'ai-msg'); }, 1000);
-        }
+            document.getElementById('userInput').value = '';
+            clearPreview();
+            box.scrollTop = box.scrollHeight;
 
-        function addMessage(t, c) {
-            const b = document.getElementById('chatBox');
-            const d = document.createElement('div');
-            d.className = `msg ${c}`; d.innerText = t;
-            b.appendChild(d); scrollToBottom();
-        }
+            // API Rotation Logic
+            const currentAPIKey = apiKeys[currentKeyIndex];
+            console.log("Using Key Index:", currentKeyIndex);
+            
+            // Key Rotation for next time
+            currentKeyIndex = (currentKeyIndex + 1) % apiKeys.length;
 
-        function addMedia(s) {
-            const b = document.getElementById('chatBox');
-            const i = document.createElement('img');
-            i.src = s; i.className = "media-msg";
-            b.appendChild(i); scrollToBottom();
-        }
-
-        function scrollToBottom() {
-            const b = document.getElementById('chatBox');
-            b.scrollTop = b.scrollHeight;
+            // AI Response (Gemini API Call Sample)
+            setTimeout(() => {
+                let ai = document.createElement('div'); ai.className='msg ai-msg';
+                ai.innerText = "জি সিয়াম বস্, আপনার মেসেজ প্রসেস করা হচ্ছে (Using Key "+(currentKeyIndex)+")";
+                box.appendChild(ai);
+                box.scrollTop = box.scrollHeight;
+            }, 1000);
         }
     </script>
 </body>
