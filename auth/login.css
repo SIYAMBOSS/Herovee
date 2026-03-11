@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Inter:wght@400;600&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #050505; height: 100vh; display: flex; align-items: center; justify-content: center; font-family: 'Inter', sans-serif; overflow: hidden; }
+
+.glow-bg {
+    position: absolute; width: 380px; height: 380px;
+    background: linear-gradient(135deg, #45f3ff, #ff3c7b);
+    filter: blur(120px); border-radius: 50%; opacity: 0.25;
+}
+
+.card {
+    position: relative; width: 90%; max-width: 360px;
+    background: rgba(15, 15, 15, 0.95); border-radius: 40px;
+    padding: 50px 30px; border: 1px solid rgba(255, 255, 255, 0.05);
+    text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+}
+
+.logo { font-family: 'Orbitron', sans-serif; color: white; font-size: 32px; letter-spacing: 5px; margin-bottom: 40px; }
+
+.input-group { display: flex; flex-direction: column; gap: 12px; }
+.input-style { width: 100%; padding: 16px; background: #1a1a1a; border: 1px solid #222; border-radius: 12px; color: white; outline: none; }
+
+.btn-primary {
+    width: 100%; padding: 16px; background: linear-gradient(90deg, #45f3ff 0%, #ff3c7b 100%);
+    border: none; border-radius: 12px; color: white; font-weight: 700; cursor: pointer; margin-top: 20px;
+}
+
+.link { color: #45f3ff; cursor: pointer; font-weight: 600; }
+#toast { position: fixed; bottom: -60px; left: 50%; transform: translateX(-50%); background: #ff3c7b; color: white; padding: 10px 25px; border-radius: 50px; transition: 0.5s; }
+#toast.active { bottom: 30px; }
