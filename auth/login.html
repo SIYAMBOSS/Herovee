@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Herovee - Access System</title>
+    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="glow-bg"></div>
+
+    <div class="card">
+        <h1 class="logo">HEROVEE</h1>
+
+        <div id="loginSection">
+            <div class="input-group">
+                <input type="email" id="loginEmail" class="input-style" placeholder="Gmail Address">
+                <div class="pass-wrapper">
+                    <input type="password" id="loginPass" class="input-style" placeholder="Password">
+                    <i class="fa-solid fa-eye-slash toggle-pass" onclick="togglePass('loginPass', this)"></i>
+                </div>
+            </div>
+            <button class="btn-primary" id="loginBtn">SIGN IN</button>
+            <p class="footer-text">New here? <span class="link" onclick="switchTab('signup')">Create Account</span></p>
+            <p class="link forgot-link" onclick="forgotPass()">Forgot Password?</p>
+        </div>
+
+        <div id="signupSection" style="display: none;">
+            <div class="input-group">
+                <input type="text" id="regName" class="input-style" placeholder="Full Name">
+                <select id="regCountry" class="input-style">
+                    <option value="" disabled selected>Select Country</option>
+                    <option value="Bangladesh">Bangladesh</option>
+                    <option value="India">India</option>
+                    <option value="Pakistan">Pakistan</option>
+                    <option value="Nepal">Nepal</option>
+                    <option value="Malaysia">Malaysia</option>
+                    </select>
+                <input type="email" id="regEmail" class="input-style" placeholder="Gmail Address">
+                <input type="password" id="regPass" class="input-style" placeholder="Create Password">
+                <input type="password" id="confirmPass" class="input-style" placeholder="Confirm Password">
+            </div>
+            <button class="btn-primary" id="registerBtn">CREATE ACCOUNT</button>
+            <p class="footer-text">Already have? <span class="link" onclick="switchTab('login')">Sign In</span></p>
+        </div>
+    </div>
+
+    <div id="toast">Message</div>
+
+    <script type="module" src="login.js"></script>
+</body>
+</html>
